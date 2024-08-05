@@ -1,51 +1,29 @@
-# Natural ou Fake Natty? Como Vencer na Era das IAs Generativas
+# Histórico da Inteligência Artificial 
 
-## 🚀 Introdução
-
-> Woooow! Look at this 👀
-
-Olá pessoal, Venilton da DIO aqui! Inspirado na hype _"Natty or Not"_ do fisiculturismo, este Lab da DIO te convida a conhecer o mundo das IAs Generativas, explorando o potencial dessas tendências tecnológicas incríveis!
-
-## 🎯 Bora Pro Desafio!? Você Já Venceu 💪🤓
-
-### Objetivos
-
-1. **Explorar IAs Generativas**: Utilize essas tecnologias para criar conteúdos que sejam o mais realista possível. Seja criativo! Você pode produzir imagens, textos, áudios, vídeos ou combinações de tudo isso!
-1. **Potfólio de Projetos**:
-    1. Faça o "fork" deste repositório, criando uma cópia em seu GitHub pessoal;
-    2. Edite seu README com os detalhes do seu projeto, siga nosso [Template](#template) (é só copiar, colar e preencher);
-    3. Submeta o link do seu repositório na plataforma da DIO. Pronto, você acabou de fortalecer seu portfólio de projetos nos perfis do GitHub e DIO 🚀
-1. **Efeito de Rede**: Compartilhe seus resultados nas redes sociais com a hashtag **#LabDIONattyOrNot**. Não esqueça de nos marcar: [DIO](https://www.linkedin.com/school/dio-makethechange) e [falvojr](https://www.linkedin.com/in/falvojr).
-
-### Template
-
-```markdown
-# Título do Projeto Extremamente Aesthetic ;)
 
 ## 📒 Descrição
-Breve descrição do seu projeto
+Esse Infografico busca expor de forma ludica e visual um breve Histórico sobre a evolução do conceito de IAs na história.
 
 ## 🤖 Tecnologias Utilizadas
-Liste as IAs Generativas e outras ferramentas usadas
+- IA Generativa [Copilot](https://copilot.microsoft.com/)para ajudar a checar as referências de pessoas, anos e dados e complementar informações.
+- IA Generativa [Leonardo Ai](https://app.leonardo.ai/) para criar as artes que representam cada ano e as figuras históricas às quais se referem.
+- Ferramenta [Canva](https://www.canva.com/) para criar o template da imagem, que foi modificado nas cores para combinar com as imagens geradas.
+- Ferramenta IA Generativa do [Canva](https://www.canva.com/) para fazer correções ortográficas no texto.
 
 ## 🧐 Processo de Criação
-Descreva como você criou o conteúdo
+Utilizei o *Copilot* para revisar minha pesquisa e complementar os materiais estudados e fornecidos nas aulas de História da Inteligência Artificial pelo bootcamp da DIO. Também aproveitei para estudar mais e aprender um pouco mais com ele, utilizando as informações que já tinha adquirido na aula. Com o *Canva*, organizei as informações por anos em um infográfico por meio de um template já pronto. Após isso, utilizei a ferramenta do *Leonardo AI* para criar imagens que aludissem ao que estava sendo falado no texto ou que retratassem o personagem histórico mencionado. 
+
+Foi incrível constatar, comparando com a imagem da mesmo pessoa no Google, a semelhança dos rostos ao colocar o nome do personagem no prompt para geração pela IA.
+
+O critério para a escolha da imagem foi aquela que melhor retratasse o contexto e fosse mais parecida com o rosto real da pessoa histórica mencionada. 
+
+Por fim, fiz ajustes de cores no template do *Canva* para combinar com os tons das imagens que o *Leonardo AI* havia me fornecido com base nos meus prompts. Além disso, utilizei a *IA do Canva* para corrigir quaisquer erros ortográficos no texto.
 
 ## 🚀 Resultados
-Apresente os resultados do seu projeto
+O infográfico possui um conteúdo interessante e visualmente chamativo e rico. O objetivo de criá-lo era ajudar estudantes a memorizar e entender mais sobre a História da IA. Particularmente, ajudou-me não apenas ao montá-lo, mas espero que também ajude outros.
 
-## 💭 Reflexão (Opcional)
-Comente sobre o desafio de criar algo 'natty' com IA.
-```
+[LINK PARA O INFOGRÁFICO AQUI](https://drive.google.com/file/d/1zGucaT0dmJOaISkAZRpCdn7s46_D8Qwp/view?usp=sharing)
 
-### Exemplos e Insigths
+## 💭 Reflexão
+Foi particularmente enriquecedor e divertido criar esse infográfico. A cada vez que utilizo as IAs, surpreendo-me mais com sua capacidade criativa. É muito satisfatório usá-las como um copiloto em nossa vida e ver como podem nos ajudar a aprender.
 
-- [E-BOOK](/exemplos/E-BOOK.md)
-- [Podcast](/exemplos/PODCAST.md)
-- [Vídeo (Avatar Virtual)](/exemplos/VIDEO.md)
-
-## Links Interessantes
-
-[Base10: If You’re Not First, You’re Last: How AI Becomes Mission Critical](https://base10.vc/post/generative-ai-mission-critical/)
-
-![Base10's Trend Map Generative AI](https://github.com/digitalinnovationone/lab-natty-or-not/assets/730492/f4df26e8-f8f7-4419-8252-c69d73ea930c)
