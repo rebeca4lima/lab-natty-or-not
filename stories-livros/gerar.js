@@ -11,6 +11,7 @@
 //   titulo  : título do livro
 //   autor   : autor do livro
 //   plataforma: "instagram" (padrão) | "tiktok" | "pinterest" (feed 1000x1500) | "pinterest-vertical" (1080x1920)  -> tamanho e áreas livres de cada rede
+//   minFonte: tamanho mínimo da letra (padrão 24)
 //   lateral : margem livre de cada lado, em px (padrão do modelo: 150)
 //   mapa    : true para desenhar o mapa de zonas por cima (só para referência)
 //   saida   : arquivo PNG de saída, relativo a esta pasta (ex.: "saida/story.png")
@@ -45,7 +46,7 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
     let s = MAX; const set = v => ps.forEach(x => x.style.fontSize = v + 'px'); set(s);
     while (c.scrollHeight > c.clientHeight + 1 && s > MIN) { s--; set(s); }
     return { fonte: s, cabe: c.scrollHeight <= c.clientHeight + 1 };
-  }, [cfg, MAX, MIN]);
+  }, [cfg, MAX, cfg.minFonte || MIN]);
 
   if (cfg.mapa) await p.evaluate(() => {
     const R = s => document.querySelector(s).getBoundingClientRect();
