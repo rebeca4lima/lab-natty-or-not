@@ -11,13 +11,19 @@
 //   titulo  : título do livro
 //   autor   : autor do livro
 //   plataforma: "instagram" (padrão) | "tiktok" | "pinterest" (feed 1000x1500) | "pinterest-vertical" (1080x1920)  -> tamanho e áreas livres de cada rede
-//   minFonte: tamanho mínimo da letra (padrão 24)
+//   minFonte: tamanho mínimo da letra (padrão: 24 no Instagram; 20 no TikTok e no Pinterest)
 //   lateral : margem livre de cada lado, em px (padrão do modelo: 150)
 //   mapa    : true para desenhar o mapa de zonas por cima (só para referência)
 //   saida   : arquivo PNG de saída, relativo a esta pasta (ex.: "saida/story.png")
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
-const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui até caber (mínimo 24)
+// Tamanho da letra do trecho: começa em 50 e diminui até caber.
+// Instagram: mínimo 24; se não couber, divida em 2 stories.
+// TikTok e Pinterest: sempre 1 imagem; mínimo recomendado 20. Se não couber nem com 20,
+// a letra continua diminuindo até 16 e o script avisa (o ideal é encurtar o trecho).
+const MAX = 50;
+const MIN_PLATAFORMA = { instagram: 24, tiktok: 20, pinterest: 20, 'pinterest-vertical': 20 };
+const LIMITE_ABSOLUTO = 16;
 
 (async () => {
   const cfgPath = path.resolve(process.argv[2]);
@@ -29,7 +35,10 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
   await p.waitForLoadState('networkidle');
   await p.evaluate(() => document.fonts.ready);
 
-  const r = await p.evaluate(async ([cfg, MAX, MIN]) => {
+  const plataforma = cfg.plataforma || 'instagram';
+  const MIN = cfg.minFonte || MIN_PLATAFORMA[plataforma] || 24;
+  const umaSo = plataforma !== 'instagram';
+  const r = await p.evaluate(async ([cfg, MAX, MIN, PISO]) => {
     const cls = [];
     if (cfg.cor && cfg.cor !== 'rosa') cls.push(cfg.cor);
     if (cfg.traco === 'preto') cls.push('preto');
@@ -44,11 +53,15 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
     if (cfg.capa) { const im = document.getElementById('capa'); im.src = cfg.capa; await im.decode().catch(() => {}); }
     const c = document.querySelector('.conteudo'), ps = [...document.querySelectorAll('#texto p')];
     let s = MAX; const set = v => ps.forEach(x => x.style.fontSize = v + 'px'); set(s);
-    while (c.scrollHeight > c.clientHeight + 1 && s > MIN) { s--; set(s); }
-    return { fonte: s, cabe: c.scrollHeight <= c.clientHeight + 1 };
-  }, [cfg, MAX, cfg.minFonte || MIN]);
+    const transborda = () => c.scrollHeight > c.clientHeight + 1;
+    while (transborda() && s > MIN) { s--; set(s); }
+    while (transborda() && s > PISO) { s--; set(s); }   // só para plataformas de imagem única
+    return { fonte: s, cabe: !transborda() };
+  }, [cfg, MAX, MIN, umaSo ? LIMITE_ABSOLUTO : MIN]);
+  if (!r.cabe) r.aviso = umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
+  else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
 
-  if (cfg.mapa) await p.evaluate(() => {
+  if (cfg.mapa) await p.evaluate((MIN) => {
     const R = s => document.querySelector(s).getBoundingClientRect();
     const add = (css, html, cls = '') => { const d = document.createElement('div'); d.className = 'm ' + cls; d.style.cssText = css; d.innerHTML = html || ''; document.body.appendChild(d); };
     const st = document.createElement('style');
@@ -77,14 +90,14 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
       add(`left:${r.left + dx}px;top:${r.top + dy}px;background:${cor}`, txt, 'tag'); };
     box('.app', 'rgb(70,130,220)', `1 · CARD DO APP (claro, cantos retos) · ${Math.round(app.width)} px`, -42);
     box('.barra-app', 'rgb(120,90,200)', '2 · ícones do app', 30, 100);
-    box('.citacao', 'rgb(50,160,90)', '3 · TRECHO + traço lateral (letra 24–50 px)', -38);
+    box('.citacao', 'rgb(50,160,90)', `3 · TRECHO + traço lateral (letra ${MIN}–50 px)`, -38);
     const lv = R('.livro img'), ln = R('.livro');
     add(`left:${ln.left}px;top:${ln.top}px;width:${ln.width}px;height:${ln.height}px;border-color:rgb(220,140,30)`, '', 'box');
     add(`left:${ln.left}px;top:${ln.top - 40}px;background:rgb(220,140,30)`, `5 · CAPA (${Math.round(lv.width)} px) + TÍTULO (negrito) + AUTOR`, 'tag');
     const d = R('.divisor'); add(`left:${d.right + 14}px;top:${d.top - 16}px;background:rgb(140,120,100)`, `4 · linha (${Math.round(d.width)} px)`, 'tag');
     if (document.querySelector('.mt')) { const cb = R('.citacao');
       add(`left:${cb.left + 40}px;top:${cb.bottom + 40}px;background:rgb(225,110,150)`, '↑ fundo rosa = marca-texto (opcional)', 'tag'); }
-  });
+  }, MIN);
 
   const out = path.resolve(__dirname, cfg.saida);
   fs.mkdirSync(path.dirname(out), { recursive: true });

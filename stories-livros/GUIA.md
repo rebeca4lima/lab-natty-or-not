@@ -23,13 +23,24 @@
 | Fundo | Off-white quase branco, com textura de papel bem leve |
 | Card | Sempre claro, mesmo que o print enviado seja de app escuro |
 | Fonte | Open Sans, em cor café escuro |
-| Tamanho da letra | Automático: 50 px em trecho curto, diminuindo até caber (mínimo 24 px) |
+| Tamanho da letra | Automático: 50 px em trecho curto, diminuindo até caber (mínimo por rede: veja abaixo) |
 | Traço lateral | Rosa pastel |
 | Marca-texto | Nenhum, só quando você pedir |
 | Negrito | Nenhum, só quando você pedir |
 | Capa | Recortada do print ou buscada na internet em boa resolução |
 | Texto | Transcrito fielmente: tiro hifenização e quebras de linha da página, sem mudar as palavras |
-| Divisão | Sempre 1 story. Só vira 2 se a letra precisar ficar menor que 24 px, cortando no fim de um parágrafo ou de uma frase |
+| Divisão | Só no Instagram: vira 2 stories se a letra precisar ficar menor que 24 px, cortando no fim de um parágrafo ou de uma frase. TikTok e Pinterest: sempre 1 imagem |
+
+## Letra mínima e divisão por rede
+
+| Rede | Letra mínima | Se o trecho não couber |
+|---|---|---|
+| **Instagram** | 24 px | Divido em **2 stories**, cortando no fim de um parágrafo ou de uma frase |
+| **TikTok** | 20 px | Sempre **1 imagem** |
+| **Pinterest (feed)** | 20 px | Sempre **1 pin** |
+| **Pinterest vertical** | 20 px | Sempre **1 pin** |
+
+No TikTok e no Pinterest, se o trecho não couber nem com letra 20, a letra continua diminuindo até 16 e eu aviso. Nesse caso, o ideal é encurtar o trecho (por exemplo, "só até [palavra]").
 
 ## Opções (é só pedir)
 
@@ -41,7 +52,7 @@
 | "negrito em [frase]" | Negrito na frase; dá para combinar com marca-texto |
 | "livro: [título] – [autor]" | Uso esses dados quando eles não aparecem no print |
 | "capa: [foto]" | Uso a capa enviada |
-| "divide em 2" | Força 2 stories, mesmo se coubesse em 1 |
+| "divide em 2" | Força 2 stories, mesmo se coubesse em 1 (só no Instagram) |
 | "só até [palavra]" / "começa em [palavra]" | Corto o trecho onde você indicar |
 
 **Exemplo de pedido:**
@@ -79,6 +90,7 @@ Mesmo modelo e mesmas opções. Só mudam as áreas livres, porque a interface d
 
 - O conteúdo fica mais para cima e sobra mais fundo embaixo, onde entram a legenda e a música do TikTok.
 - O card tem cerca de 100 px a menos de altura, então trechos longos ficam com a letra 1 ou 2 pontos menor (o trecho de exemplo ficou com 25 px, contra 26 no Instagram).
+- Sempre **1 imagem**, com letra mínima recomendada de 20 px.
 - **Como pedir:** diga "versão TikTok" ou "faz pro Instagram e pro TikTok".
 
 ---
@@ -99,6 +111,7 @@ Mesmo visual e mesmas opções, mas em **formato de pin: 1000 × 1500 px (propor
 | Livro (item 5) | igual | igual | igual |
 
 - O pin é mais baixo, então usei laterais um pouco menores. Assim o card mantém a mesma largura (780 px) e o trecho longo de exemplo cabe com letra de 25 px.
+- Sempre **1 pin**, com letra mínima recomendada de 20 px.
 - O fundo, o card, os ícones, o traço, o marca-texto e o bloco do livro são os mesmos.
 - **Como pedir:** diga "versão Pinterest" (feed) ou "faz pras três redes".
 
@@ -119,5 +132,6 @@ O Pinterest não publica áreas livres oficiais fáceis de achar, e os guias div
 | Card do app | **690 px** de largura |
 | Livro (item 5) | igual |
 
-- Cabe menos texto: o trecho curto de exemplo ficou com letra 43, e o longo foi dividido em **2 pins** (letra 29 e 31), cortando no fim do parágrafo.
+- Cabe menos texto: o trecho curto de exemplo ficou com letra 43, e o longo coube em **1 pin** com letra 21.
+- Sempre **1 pin**, com letra mínima recomendada de 20 px.
 - **Como pedir:** diga "Pinterest vertical".
