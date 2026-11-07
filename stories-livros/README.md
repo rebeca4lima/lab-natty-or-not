@@ -3,7 +3,7 @@
 Modelo para transformar trechos de livros (prints, fotos ou texto) em stories do Instagram, no estilo "print de app de leitura" sobre um fundo de papel off-white.
 
 - **Regras, mapa e opções:** veja [GUIA.md](GUIA.md)
-- **Exemplos:** pasta [`referencia/`](referencia/)
+- **Exemplos:** pasta [`referencia/`](referencia/) (Instagram e TikTok)
 
 | Curto | Longo | Destaque azul + negrito |
 |---|---|---|
@@ -42,6 +42,6 @@ Exemplo de pedido (`pedidos/meu-story.json`):
 }
 ```
 
-Campos opcionais: `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150) e `mapa` (`true` desenha o mapa de zonas).
+Campos opcionais: `plataforma` (`instagram` padrão ou `tiktok`), `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150) e `mapa` (`true` desenha o mapa de zonas).
 
 O script informa o tamanho de letra usado e se o texto coube (`{ fonte: 50, cabe: true }`). Se `cabe` for `false`, divida o trecho em dois pedidos.

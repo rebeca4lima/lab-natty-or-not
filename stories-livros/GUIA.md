@@ -60,3 +60,23 @@ Resultado: [referencia/exemplo-azul-negrito.png](referencia/exemplo-azul-negrito
 | Lilás pastel | `rgba(205,185,240,.55)` | `#BFA9E8` |
 | Amarelo pastel | `rgba(250,226,140,.6)` | `#EFD27A` |
 | Traço preto (opcional) | n/a | `#2B2622` |
+
+---
+
+# Versão TikTok
+
+![Mapa TikTok](referencia/tiktok-mapa-esqueleto.png)
+
+Mesmo modelo e mesmas opções. Só mudam as áreas livres, porque a interface do TikTok cobre partes diferentes da tela.
+
+| Área | Instagram | TikTok |
+|---|---|---|
+| Topo livre | 250 px | **150 px** (abas Seguindo / Para você e busca) |
+| Base livre | 250 px | **450 px** (nome, legenda, música e barra de navegação) |
+| Laterais livres | 150 px | 150 px (já cobre a coluna de botões à direita, de ~140 px) |
+| Card do app | 780 px de largura | 780 px de largura, um pouco mais baixo |
+| Livro (item 5) | igual | igual |
+
+- O conteúdo fica mais para cima e sobra mais fundo embaixo, onde entram a legenda e a música do TikTok.
+- O card tem cerca de 100 px a menos de altura, então trechos longos ficam com a letra 1 ou 2 pontos menor (o trecho de exemplo ficou com 25 px, contra 26 no Instagram).
+- **Como pedir:** diga "versão TikTok" ou "faz pro Instagram e pro TikTok".

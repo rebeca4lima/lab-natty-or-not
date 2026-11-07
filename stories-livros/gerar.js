@@ -10,6 +10,7 @@
 //   capa    : caminho da capa, relativo a esta pasta (ex.: "capas/livro.jpg")
 //   titulo  : título do livro
 //   autor   : autor do livro
+//   plataforma: "instagram" (padrão) | "tiktok"  -> áreas livres de cada rede
 //   lateral : margem livre de cada lado, em px (padrão do modelo: 150)
 //   mapa    : true para desenhar o mapa de zonas por cima (só para referência)
 //   saida   : arquivo PNG de saída, relativo a esta pasta (ex.: "saida/story.png")
@@ -30,6 +31,7 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
     const cls = [];
     if (cfg.cor && cfg.cor !== 'rosa') cls.push(cfg.cor);
     if (cfg.traco === 'preto') cls.push('preto');
+    if (cfg.plataforma === 'tiktok') cls.push('tiktok');
     document.body.className = cls.join(' ');
     if (cfg.lateral) { const sf = document.querySelector('.safe').style; sf.left = sf.right = cfg.lateral + 'px'; }
     if (cfg.texto) document.getElementById('texto').innerHTML = cfg.texto;
@@ -54,12 +56,16 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
       .cota{color:#2F6FD0;font-size:22px;white-space:nowrap}`;
     document.head.appendChild(st);
     const safe = R('.safe'), lat = Math.round(safe.left), app = R('.app');
-    add('left:0;right:0;top:0;height:250px', 'TOPO RESERVADO · 250 px<br><span style="font-weight:400;font-size:24px">nome do perfil · barra de progresso</span>', 'z');
-    add('left:0;right:0;bottom:0;height:250px', 'BASE RESERVADA · 250 px<br><span style="font-weight:400;font-size:24px">caixa de resposta · curtir · enviar</span>', 'z');
-    add(`left:0;width:${lat}px;top:250px;bottom:250px`, '', 'lat');
-    add(`right:0;width:${lat}px;top:250px;bottom:250px`, '', 'lat');
-    add('left:20px;top:1080px;transform:rotate(-90deg);transform-origin:left top', `margem lateral · ${lat} px`, 'cota');
-    add('right:20px;top:840px;transform:rotate(90deg);transform-origin:right top', `margem lateral · ${lat} px`, 'cota');
+    const tt = document.body.classList.contains('tiktok');
+    const T = Math.round(safe.top), B = Math.round(1920 - safe.bottom);
+    const sub = t => `<br><span style="font-weight:400;font-size:24px">${t}</span>`;
+    add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(tt ? 'abas Seguindo / Para você · busca' : 'nome do perfil · barra de progresso'), 'z');
+    add(`left:0;right:0;bottom:0;height:${B}px`, `BASE RESERVADA · ${B} px` + sub(tt ? 'nome · legenda · música · barra de navegação' : 'caixa de resposta · curtir · enviar'), 'z');
+    add(`left:0;width:${lat}px;top:${T}px;bottom:${B}px`, '', 'lat');
+    add(`right:0;width:${lat}px;top:${T}px;bottom:${B}px`, '', 'lat');
+    if (tt) add(`right:12px;width:${lat - 24}px;top:${T + 560}px;height:${1920 - B - T - 560}px;background:rgba(230,80,80,.13);border:3px dashed rgba(200,60,60,.7);border-radius:12px;color:#B03A3A;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, 'botões<br>curtir<br>comentar<br>salvar<br>compartilhar');
+    add(`left:20px;top:${tt ? 900 : 1080}px;transform:rotate(-90deg);transform-origin:left top`, `margem lateral · ${lat} px`, 'cota');
+    add(`right:20px;top:${tt ? 400 : 840}px;transform:rotate(90deg);transform-origin:right top`, `margem lateral · ${lat} px`, 'cota');
     const box = (sel, cor, txt, dy = -40, dx = 0) => { const r = R(sel);
       add(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-color:${cor}`, '', 'box');
       add(`left:${r.left + dx}px;top:${r.top + dy}px;background:${cor}`, txt, 'tag'); };
