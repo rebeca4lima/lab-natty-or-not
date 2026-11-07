@@ -1,0 +1,8 @@
+{
+  "capa": "capas/a-terceira-alternativa.jpg",
+  "titulo": "A terceira alternativa",
+  "autor": "Stephen R. Covey",
+  "texto": "<p>Não sou apenas “o meu lado” em um conflito. <span class=\"mt\">Sou mais do que a soma dos meus preconceitos, do meu partido e de minhas ideias preconcebidas.</span> Meus pensamentos não são predeterminados por minha família, minha cultura ou minha empresa.</p>",
+  "mapa": true,
+  "saida": "referencia/mapa-esqueleto.png"
+}

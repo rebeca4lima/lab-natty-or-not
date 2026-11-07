@@ -1,0 +1,62 @@
+# Guia do modelo: trechos de livros para o Stories
+
+![Mapa do esqueleto](referencia/mapa-esqueleto.png)
+
+## Mapa do story (1080 × 1920 px)
+
+| Área | O que é | Medida |
+|---|---|---|
+| Topo | Livre (nome do perfil e barra de progresso do Instagram) | 250 px |
+| Laterais | Livres | **150 px** de cada lado |
+| **1 · Card do app** | "Print" de app de leitura: claro, cantos retos, sombra leve | 780 px de largura, do topo livre até a linha |
+| **2 · Ícones** | Voltar, índice, marcador, busca e menu | Barra no alto do card |
+| **3 · Trecho** | Texto com traço lateral, começando logo abaixo dos ícones | Letra automática de 50 a 24 px |
+| **4 · Linha** | Separador fino entre o card e o livro | 520 px, centralizada |
+| **5 · Livro** | Capa + **título em negrito** + autor em cinza, centralizados | Capa com 150 px de largura |
+| Base | Livre (caixa de resposta, curtir e enviar) | 250 px |
+
+## Padrão (quando você não diz nada)
+
+| Item | Padrão |
+|---|---|
+| Formato | PNG 1080 × 1920 |
+| Fundo | Off-white quase branco, com textura de papel bem leve |
+| Card | Sempre claro, mesmo que o print enviado seja de app escuro |
+| Fonte | Open Sans, em cor café escuro |
+| Tamanho da letra | Automático: 50 px em trecho curto, diminuindo até caber (mínimo 24 px) |
+| Traço lateral | Rosa pastel |
+| Marca-texto | Nenhum, só quando você pedir |
+| Negrito | Nenhum, só quando você pedir |
+| Capa | Recortada do print ou buscada na internet em boa resolução |
+| Texto | Transcrito fielmente: tiro hifenização e quebras de linha da página, sem mudar as palavras |
+| Divisão | Sempre 1 story. Só vira 2 se a letra precisar ficar menor que 24 px, cortando no fim de um parágrafo ou de uma frase |
+
+## Opções (é só pedir)
+
+| Você diz | Resultado |
+|---|---|
+| "destaca [frase]" | Marca-texto rosa pastel na frase |
+| "destaca [frase] em azul / verde / lilás / amarelo" | Marca-texto nessa cor; o traço lateral acompanha a cor |
+| "traço preto" | Traço lateral preto; o destaque continua na cor pedida |
+| "negrito em [frase]" | Negrito na frase; dá para combinar com marca-texto |
+| "livro: [título] – [autor]" | Uso esses dados quando eles não aparecem no print |
+| "capa: [foto]" | Uso a capa enviada |
+| "divide em 2" | Força 2 stories, mesmo se coubesse em 1 |
+| "só até [palavra]" / "começa em [palavra]" | Corto o trecho onde você indicar |
+
+**Exemplo de pedido:**
+
+> [print] destaca "Sou mais do que a soma dos meus preconceitos" em azul e negrito em "minha cultura"
+
+Resultado: [referencia/exemplo-azul-negrito.png](referencia/exemplo-azul-negrito.png)
+
+## Paleta
+
+| Cor | Marca-texto | Traço |
+|---|---|---|
+| Rosa pastel (padrão) | `rgba(247,176,196,.55)` | `#EFA9BF` |
+| Azul pastel | `rgba(160,200,240,.55)` | `#9EC3EA` |
+| Verde pastel | `rgba(178,226,190,.55)` | `#A3D6B0` |
+| Lilás pastel | `rgba(205,185,240,.55)` | `#BFA9E8` |
+| Amarelo pastel | `rgba(250,226,140,.6)` | `#EFD27A` |
+| Traço preto (opcional) | n/a | `#2B2622` |
