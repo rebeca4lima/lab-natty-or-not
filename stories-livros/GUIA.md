@@ -100,4 +100,24 @@ Mesmo visual e mesmas opções, mas em **formato de pin: 1000 × 1500 px (propor
 
 - O pin é mais baixo, então usei laterais um pouco menores. Assim o card mantém a mesma largura (780 px) e o trecho longo de exemplo cabe com letra de 25 px.
 - O fundo, o card, os ícones, o traço, o marca-texto e o bloco do livro são os mesmos.
-- **Como pedir:** diga "versão Pinterest" ou "faz pras três redes".
+- **Como pedir:** diga "versão Pinterest" (feed) ou "faz pras três redes".
+
+## Pinterest vertical (estilo story)
+
+![Mapa Pinterest vertical](referencia/pinterest-vertical-mapa-esqueleto.png)
+
+O antigo "Story Pin" / "Idea Pin" virou pin comum. O equivalente hoje é o **pin vertical de tela cheia, 1080 × 1920 (9:16)**. No feed ele pode aparecer cortado; o pin inteiro só aparece quando a pessoa abre.
+
+O Pinterest não publica áreas livres oficiais fáceis de achar, e os guias divergem. Por isso usei os números **mais conservadores** encontrados, com as laterais iguais para manter o layout centralizado:
+
+| Área | Pinterest vertical |
+|---|---|
+| Tamanho | 1080 × 1920 |
+| Topo livre | **270 px** (fechar, perfil, botões do topo) |
+| Base livre | **440 px** (título, descrição, Salvar, comentários) |
+| Laterais livres | **195 px** (cobre a coluna de botões à direita) |
+| Card do app | **690 px** de largura |
+| Livro (item 5) | igual |
+
+- Cabe menos texto: o trecho curto de exemplo ficou com letra 43, e o longo foi dividido em **2 pins** (letra 29 e 31), cortando no fim do parágrafo.
+- **Como pedir:** diga "Pinterest vertical".

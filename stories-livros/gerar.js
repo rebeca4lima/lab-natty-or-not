@@ -10,7 +10,7 @@
 //   capa    : caminho da capa, relativo a esta pasta (ex.: "capas/livro.jpg")
 //   titulo  : título do livro
 //   autor   : autor do livro
-//   plataforma: "instagram" (padrão) | "tiktok" | "pinterest"  -> tamanho e áreas livres de cada rede
+//   plataforma: "instagram" (padrão) | "tiktok" | "pinterest" (feed 1000x1500) | "pinterest-vertical" (1080x1920)  -> tamanho e áreas livres de cada rede
 //   lateral : margem livre de cada lado, em px (padrão do modelo: 150)
 //   mapa    : true para desenhar o mapa de zonas por cima (só para referência)
 //   saida   : arquivo PNG de saída, relativo a esta pasta (ex.: "saida/story.png")
@@ -34,6 +34,7 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
     if (cfg.traco === 'preto') cls.push('preto');
     if (cfg.plataforma === 'tiktok') cls.push('tiktok');
     if (cfg.plataforma === 'pinterest') cls.push('pinterest');
+    if (cfg.plataforma === 'pinterest-vertical') cls.push('pinterest-vertical');
     document.body.className = cls.join(' ');
     if (cfg.lateral) { const sf = document.querySelector('.safe').style; sf.left = sf.right = cfg.lateral + 'px'; }
     if (cfg.texto) document.getElementById('texto').innerHTML = cfg.texto;
@@ -59,17 +60,17 @@ const MAX = 50, MIN = 24; // tamanho da letra do trecho: começa em 50 e diminui
     document.head.appendChild(st);
     const safe = R('.safe'), lat = Math.round(safe.left), app = R('.app');
     const tt = document.body.classList.contains('tiktok');
-    const pin = document.body.classList.contains('pinterest'), H = window.innerHeight;
+    const pin = document.body.classList.contains('pinterest'), pv = document.body.classList.contains('pinterest-vertical'), H = window.innerHeight;
     const T = Math.round(safe.top), B = Math.round(H - safe.bottom);
     const sub = t => `<br><span style="font-weight:400;font-size:24px">${t}</span>`;
     if (pin) add(`left:0;right:0;top:0;height:${T}px;display:block;padding-top:12px;font-size:24px`, `TOPO RESERVADO · ${T} px <span style="font-weight:400">· botões Salvar e menu · cantos arredondados</span>`, 'z');
-    else add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(tt ? 'abas Seguindo / Para você · busca' : 'nome do perfil · barra de progresso'), 'z');
-    add(`left:0;right:0;bottom:0;height:${B}px`, `BASE RESERVADA · ${B} px` + sub(tt ? 'nome · legenda · música · barra de navegação' : pin ? 'ícone de busca visual · cantos arredondados' : 'caixa de resposta · curtir · enviar'), 'z');
+    else add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(tt ? 'abas Seguindo / Para você · busca' : pv ? 'fechar · perfil · botões do topo' : 'nome do perfil · barra de progresso'), 'z');
+    add(`left:0;right:0;bottom:0;height:${B}px`, `BASE RESERVADA · ${B} px` + sub(tt ? 'nome · legenda · música · barra de navegação' : pv ? 'título · descrição · Salvar · comentários' : pin ? 'ícone de busca visual · cantos arredondados' : 'caixa de resposta · curtir · enviar'), 'z');
     add(`left:0;width:${lat}px;top:${T}px;bottom:${B}px`, '', 'lat');
     add(`right:0;width:${lat}px;top:${T}px;bottom:${B}px`, '', 'lat');
-    if (tt) add(`right:12px;width:${lat - 24}px;top:${T + 560}px;height:${H - B - T - 560}px;background:rgba(230,80,80,.13);border:3px dashed rgba(200,60,60,.7);border-radius:12px;color:#B03A3A;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, 'botões<br>curtir<br>comentar<br>salvar<br>compartilhar');
-    add(`left:20px;top:${tt ? 900 : pin ? 860 : 1080}px;transform:rotate(-90deg);transform-origin:left top`, `margem lateral · ${lat} px`, 'cota');
-    add(`right:20px;top:${tt ? 400 : pin ? 420 : 840}px;transform:rotate(90deg);transform-origin:right top`, `margem lateral · ${lat} px`, 'cota');
+    if (tt || pv) add(`right:12px;width:${lat - 24}px;top:${T + 560}px;height:${H - B - T - 560}px;background:rgba(230,80,80,.13);border:3px dashed rgba(200,60,60,.7);border-radius:12px;color:#B03A3A;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, pv ? 'botões<br>reagir<br>comentar<br>compartilhar' : 'botões<br>curtir<br>comentar<br>salvar<br>compartilhar');
+    add(`left:20px;top:${tt ? 900 : pv ? 1000 : pin ? 860 : 1080}px;transform:rotate(-90deg);transform-origin:left top`, `margem lateral · ${lat} px`, 'cota');
+    add(`right:20px;top:${tt ? 400 : pv ? 480 : pin ? 420 : 840}px;transform:rotate(90deg);transform-origin:right top`, `margem lateral · ${lat} px`, 'cota');
     const box = (sel, cor, txt, dy = -40, dx = 0) => { const r = R(sel);
       add(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-color:${cor}`, '', 'box');
       add(`left:${r.left + dx}px;top:${r.top + dy}px;background:${cor}`, txt, 'tag'); };

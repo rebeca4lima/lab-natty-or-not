@@ -42,6 +42,6 @@ Exemplo de pedido (`pedidos/meu-story.json`):
 }
 ```
 
-Campos opcionais: `plataforma` (`instagram` padrão, `tiktok` ou `pinterest`; o Pinterest sai em 1000×1500), `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150) e `mapa` (`true` desenha o mapa de zonas).
+Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest` (feed, 1000×1500) ou `pinterest-vertical` (1080×1920)), `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150) e `mapa` (`true` desenha o mapa de zonas).
 
 O script informa o tamanho de letra usado e se o texto coube (`{ fonte: 50, cabe: true }`). Se `cabe` for `false`, divida o trecho em dois pedidos.
