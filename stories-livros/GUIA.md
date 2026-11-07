@@ -80,3 +80,24 @@ Mesmo modelo e mesmas opções. Só mudam as áreas livres, porque a interface d
 - O conteúdo fica mais para cima e sobra mais fundo embaixo, onde entram a legenda e a música do TikTok.
 - O card tem cerca de 100 px a menos de altura, então trechos longos ficam com a letra 1 ou 2 pontos menor (o trecho de exemplo ficou com 25 px, contra 26 no Instagram).
 - **Como pedir:** diga "versão TikTok" ou "faz pro Instagram e pro TikTok".
+
+---
+
+# Versão Pinterest
+
+![Mapa Pinterest](referencia/pinterest-mapa-esqueleto.png)
+
+Mesmo visual e mesmas opções, mas em **formato de pin: 1000 × 1500 px (proporção 2:3)**, o tamanho recomendado pelo Pinterest. Imagens 9:16 aparecem cortadas no feed.
+
+| Área | Instagram | TikTok | Pinterest |
+|---|---|---|---|
+| Tamanho | 1080 × 1920 | 1080 × 1920 | **1000 × 1500** |
+| Topo livre | 250 px | 150 px | **100 px** (botões Salvar e menu ao abrir o pin; cantos arredondados) |
+| Base livre | 250 px | 450 px | **100 px** (ícone de busca visual; cantos arredondados) |
+| Laterais livres | 150 px | 150 px | **110 px** (o Pinterest não cobre as laterais) |
+| Card do app | 780 px | 780 px | 780 px |
+| Livro (item 5) | igual | igual | igual |
+
+- O pin é mais baixo, então usei laterais um pouco menores. Assim o card mantém a mesma largura (780 px) e o trecho longo de exemplo cabe com letra de 25 px.
+- O fundo, o card, os ícones, o traço, o marca-texto e o bloco do livro são os mesmos.
+- **Como pedir:** diga "versão Pinterest" ou "faz pras três redes".

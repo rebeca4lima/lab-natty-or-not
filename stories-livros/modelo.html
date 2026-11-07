@@ -26,6 +26,9 @@
   .safe { position: absolute; top: 250px; bottom: 250px; left: 150px; right: 150px; display: flex; flex-direction: column; }
   /* TikTok: topo 150 px (abas/busca), base 450 px (nome, legenda, música); laterais iguais (150 px cobrem a coluna de botões) */
   body.tiktok .safe { top: 150px; bottom: 450px; }
+  /* Pinterest: pin 1000x1500 (2:3); 100 px livres em cima (botões Salvar/menu) e embaixo (busca visual); laterais 110 px (o Pinterest não cobre as laterais) */
+  body.pinterest { width: 1000px; height: 1500px; background-position: center; }
+  body.pinterest .safe { top: 100px; bottom: 100px; left: 110px; right: 110px; }
   .area { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
 
   /* "print" do app */
