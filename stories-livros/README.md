@@ -42,6 +42,6 @@ Exemplo de pedido (`pedidos/meu-story.json`):
 }
 ```
 
-Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest` (feed, 1000×1500) ou `pinterest-vertical` (1080×1920)), `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150), `minFonte` (letra mínima, padrão 24) e `mapa` (`true` desenha o mapa de zonas).
+Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest` (feed, 1000×1500) ou `pinterest-vertical` (1080×1920)), `cor` (`rosa`, `azul`, `verde`, `lilas`, `amarelo`), `traco` (`preto`), `lateral` (margem em px, padrão 150), `minFonte` (letra mínima; padrão 24 no Instagram e 20 no TikTok e no Pinterest) e `mapa` (`true` desenha o mapa de zonas).
 
-O script informa o tamanho de letra usado e se o texto coube (`{ fonte: 50, cabe: true }`). Se `cabe` for `false`, divida o trecho em dois pedidos.
+O script informa o tamanho de letra usado e se o texto coube (`{ fonte: 50, cabe: true }`). No Instagram, se `cabe` for `false`, divida o trecho em dois pedidos. No TikTok e no Pinterest a imagem é sempre única: o script avisa (`aviso`) quando a letra fica abaixo de 20 ou o texto não cabe, e aí o ideal é encurtar o trecho.
