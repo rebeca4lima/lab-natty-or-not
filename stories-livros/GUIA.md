@@ -1,5 +1,7 @@
 # Guia do modelo: trechos de livros para o Stories
 
+**As 4 versões lado a lado:** [referencia/mapas-4-versoes.png](referencia/mapas-4-versoes.png)
+
 ![Mapa do esqueleto](referencia/mapa-esqueleto.png)
 
 ## Mapa do story (1080 × 1920 px)
