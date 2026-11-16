@@ -1,5 +1,5 @@
 {
-  "texto": "<p>Hoje, um tom cada vez mais venenoso está se infiltrando nesses atos de não comunicação. Parece que vivenciamos uma falta de civilidade no discurso como jamais se viu em tempo algum. Há raiva, divisão, frustração e polarização. Mesmo nos níveis mais altos de governo, em que já reinou o respeito mútuo, ouvimos uma vez ou outra acessos de raiva em vez de diálogo. O raciocínio fundamentado em Duas Alternativas está se tornando venenoso.</p>",
+  "texto": "<p>Hoje, um tom cada vez mais venenoso está se infiltrando nesses <span class=\"mt\">atos de não comunicação</span>. Parece que vivenciamos uma falta de civilidade no discurso como jamais se viu em tempo algum. Há raiva, divisão, frustração e polarização. Mesmo nos níveis mais altos de governo, em que já reinou o respeito mútuo, ouvimos uma vez ou outra acessos de raiva em vez de diálogo. O raciocínio fundamentado em Duas Alternativas está se tornando venenoso.</p>",
   "capa": "capas/a-terceira-alternativa.jpg",
   "titulo": "A terceira alternativa",
   "autor": "Stephen R. Covey",
