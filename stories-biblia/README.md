@@ -45,7 +45,8 @@ Exemplo de pedido:
 }
 ```
 
-- `texto`: o trecho. Parágrafos em `<p>`, número do versículo em `<sup>`, grifo em `<span class="mt">` (pode haver mais de um). "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
+- `texto`: o trecho, na NVI. Parágrafos em `<p>`, número do versículo em `<sup>`, grifo em `<span class="mt">` (pode haver mais de um). "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
+- Trecho longo com grifo só numa frase: envolva o trecho todo em `<span class="foco">…</span>` (fica nítido e define o enquadramento) e a frase em `<span class="mt">`. Com `foco`, um traço de caneta na margem marca o trecho (desligue com `"traco": false`; ligue sem `foco` com `"traco": true`).
 - `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real.
 - `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
 - `referencia` e `versao`: só para registro; não aparecem na imagem.

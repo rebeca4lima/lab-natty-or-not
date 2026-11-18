@@ -55,7 +55,7 @@
   .capa::after { content: ""; position: absolute; inset: .28em; border-radius: .25em; border: 1px dashed rgba(200,150,120,.25); }
   .folha { position: absolute; inset: 0; background: var(--corte); border-right: 1px solid rgba(40,5,5,.35); border-bottom: 1px solid rgba(40,5,5,.35); }
 
-  .pagina { position: relative; width: 36.8em; height: 54em; background: var(--papel); overflow: hidden;
+  .pagina { position: relative; width: 36.8em; height: 80em; background: var(--papel); overflow: hidden;
             padding: 2.4em 1.9em 0 2.6em; color: var(--tinta); font-family: 'Crimson Pro', serif; }
   /* textura do papel + sombra da lombada (à esquerda) */
   .pagina::before { content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; mix-blend-mode: multiply; opacity: .9;
@@ -78,6 +78,7 @@
   .transparencia .colunas { padding: 2.4em 1.9em 0 2.6em; }
   /* marca-texto: riscos com borda irregular, por cima do texto (multiplica) */
   .marcas { position: absolute; inset: 0; z-index: 3; pointer-events: none; mix-blend-mode: multiply; filter: url(#aspero); }
+  .traco-margem { position: absolute; background: rgba(122,20,38,.85); border-radius: 999px; }
   .risco { position: absolute; background: var(--mt); border-radius: .18em .32em .26em .2em; }
   .risco::after { content: ""; position: absolute; right: -.05em; top: 8%; bottom: 8%; width: .38em; border-radius: 50%; background: var(--mt-borda); filter: blur(1.5px); }
 
@@ -151,7 +152,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   // coluna da esquerda: texto anterior (desfocado); coluna da direita: contexto + trecho + continuação
   c1.innerHTML = senhor(cfg.outraColuna || cfg.antes || '');
   c2.innerHTML = senhor((cfg.antes || '') + (cfg.titulo ? `<p class="titulo-secao">${cfg.titulo}</p>` : '') + cfg.texto + (cfg.depois || ''));
-  for (const c of [c1, c2]) for (let i = 0; i < 4 && c.scrollHeight < pag.clientHeight * 1.1; i++) c.insertAdjacentHTML('beforeend', senhor(cfg.depois || cfg.antes || ''));
+  for (const c of [c1, c2]) for (let i = 0; i < 10 && c.scrollHeight < pag.clientHeight * 1.1; i++) c.insertAdjacentHTML('beforeend', senhor(cfg.depois || cfg.antes || ''));
   document.querySelector('.transparencia').innerHTML = `<div class="colunas"><div class="col">${c2.innerHTML}</div><div class="col">${c1.innerHTML}</div></div>`;
 
   // espessura do miolo (corte avermelhado)
@@ -162,7 +163,8 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const safe = document.querySelector('.safe').getBoundingClientRect();
   const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .46), y: safe.top + safe.height * (cfg.focoY ?? .5) };
   const rz = cfg.giro ?? -16, rx = cfg.inclinacao ?? 24, ry = cfg.lado ?? -9;
-  const mts = () => [...document.querySelectorAll('.c2 .mt')];
+  const mts = () => [...document.querySelectorAll('.c2 .foco, .c2 .mt')];   // define o foco e o enquadramento
+  const grifos = () => [...document.querySelectorAll('.c2 .mt')];            // só estes recebem marca-texto
   await document.fonts.ready;
 
   const cabeNaPagina = () => {
@@ -171,13 +173,15 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
     return ult.bottom <= P.bottom - 4 * parseFloat(livro.style.fontSize || 40);
   };
   livro.style.fontSize = MAX + 'px';
-  while (!cabeNaPagina() && c2.firstElementChild && !c2.firstElementChild.querySelector('.mt') && !c2.firstElementChild.classList.contains('mt')) c2.firstElementChild.remove();
+  while (!cabeNaPagina() && c2.firstElementChild && !c2.firstElementChild.querySelector('.mt, .foco') && !c2.firstElementChild.matches('.mt, .foco')) c2.firstElementChild.remove();
 
   const posicionar = (f) => {
     livro.style.fontSize = f + 'px';
     livro.style.transform = 'none'; livro.style.left = '0px'; livro.style.top = '0px';
     const P = pag.getBoundingClientRect();
+    const textoEsq = c2.getBoundingClientRect().left + parseFloat(getComputedStyle(c2).paddingLeft) - P.left;   // medido com a página reta
     const rs = mts().flatMap(m => [...m.getClientRects()]);
+    const rg = grifos().flatMap(m => [...m.getClientRects()]);
     const x0 = Math.min(...rs.map(r => r.left)), x1 = Math.max(...rs.map(r => r.right));
     const y0 = Math.min(...rs.map(r => r.top)), y1 = Math.max(...rs.map(r => r.bottom));
     const o = { x: (x0 + x1) / 2 - P.left, y: (y0 + y1) / 2 - P.top };
@@ -187,7 +191,8 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
     livro.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)`;
     const bx = mts().map(m => m.getBoundingClientRect());
     const b = { l: Math.min(...bx.map(r => r.left)), r: Math.max(...bx.map(r => r.right)), t: Math.min(...bx.map(r => r.top)), b: Math.max(...bx.map(r => r.bottom)) };
-    return { rs: rs.map(r => ({ l: r.left - P.left, t: r.top - P.top, w: r.width, h: r.height })), b,
+    const loc = r => ({ l: r.left - P.left, t: r.top - P.top, w: r.width, h: r.height });
+    return { rs: rg.map(loc), rf: rs.map(loc), textoEsq, b,
              cabe: b.l >= safe.left - 2 && b.r <= safe.right + 2 && b.t >= safe.top - 2 && b.b <= safe.bottom + 2 };
   };
   let f = MAX, m = posicionar(f);
@@ -203,6 +208,21 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
     const ex = f * (.08 + R() * .12), al = l.h * .80;
     d.style.cssText = `left:${l.l - f * .1}px;top:${l.t + (l.h - al) * .62}px;width:${l.r - l.l + f * .1 + ex}px;height:${al}px;transform:rotate(${(R() - .5) * .7}deg)`;
     mk.appendChild(d);
+  }
+
+  // traço na margem (padrão quando há <span class="foco">; ou com "traco": true): caneta vinho no vão entre as colunas,
+  // do começo ao fim do trecho em foco. Feito com segmentos de <div> (SVG grande desalinha dentro da página em 3D).
+  if (cfg.traco ?? !!document.querySelector('.c2 .foco')) {
+    const top = Math.min(...m.rf.map(r => r.t)) + f * .3, bot = Math.max(...m.rf.map(r => r.t + r.h)) - f * .55;
+    const x = m.textoEsq - f * .6, n = Math.max(2, Math.round((bot - top) / (f * 4)));
+    const pts = Array.from({ length: n + 1 }, (_, k) => ({ x: x + (R() - .5) * f * .07, y: top + (bot - top) * k / n }));
+    const esp = f * .1;
+    for (let k = 0; k < n; k++) {
+      const p0 = pts[k], p1 = pts[k + 1], L = Math.hypot(p1.x - p0.x, p1.y - p0.y) + esp * .6, ang = Math.atan2(p1.x - p0.x, p1.y - p0.y);
+      const d = document.createElement('div'); d.className = 'traco-margem';
+      d.style.cssText = `left:${p0.x - esp / 2}px;top:${p0.y - esp * .3}px;width:${esp}px;height:${L}px;transform-origin:50% 0;transform:rotate(${-ang}rad)`;
+      mk.appendChild(d);
+    }
   }
 
   document.getElementById('cena').style.display = '';

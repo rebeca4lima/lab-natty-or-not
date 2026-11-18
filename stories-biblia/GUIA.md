@@ -22,6 +22,7 @@ Uma foto "espontânea" de uma Bíblia aberta: a página em close e na diagonal, 
 | Item | Padrão |
 |---|---|
 | Formato | PNG 1080 × 1920 |
+| Versão | **NVI**, sempre (inclusive os versículos vizinhos que completam a página) |
 | Grifo | Vinho |
 | Tom | Vinho (luz baixa, bordas escuras) |
 | Superfície | Veludo vinho |
@@ -42,6 +43,18 @@ No TikTok e no Pinterest, se o trecho não couber nem com letra 20, a letra cont
 
 Os exemplos: Salmos 23:4 coube com letra 49 (Instagram e TikTok) e 43 (Pinterest vertical). 1 Coríntios 13:4-7 inteiro, com dois grifos, coube com 47 e 42.
 
+## Trechos longos
+
+Teste com Salmos 139:7-14 (8 versículos): [referencia/teste-trecho-longo-salmos-139.png](referencia/teste-trecho-longo-salmos-139.png)
+
+| Jeito | Como fica | Letra no teste |
+|---|---|---|
+| **A · Trecho inteiro grifado** | Todas as linhas do trecho com marca-texto | 37 (Instagram e TikTok), 33 (Pinterest vertical) |
+| **B · Traço na margem + grifo na frase-chave** | O trecho todo fica nítido, com um traço de caneta vinho na margem do começo ao fim; o marca-texto só na frase que você escolher | 37 / 33 |
+| **C · Instagram em 2 stories** | Cada story com metade do trecho grifado, letra maior (só no Instagram; TikTok e Pinterest continuam em 1 imagem) | 44 e 43 |
+
+Até uns 8 versículos cabem em 1 imagem com folga (acima do mínimo de 24/20). Acima disso, no Instagram, eu divido em 2 stories.
+
 ## Áreas livres (iguais ao modelo de livros)
 
 | Área | Instagram | TikTok | Pinterest vertical |
@@ -59,6 +72,8 @@ O trecho grifado fica sempre **inteiro dentro da área livre**. A página da Bí
 |---|---|
 | "[versículo] grifa [frase]" | Grifo vinho só na frase pedida |
 | "grifa [frase 1] e [frase 2]" | Dois (ou mais) grifos separados no mesmo trecho |
+| "trecho inteiro grifado" | Jeito A: marca-texto em todas as linhas |
+| "traço na margem, grifa [frase]" | Jeito B: trecho nítido com traço de caneta na margem e grifo só na frase |
 | "grifo cereja / castanho / vermelho" | Grifo nessa cor |
 | "em couro" / "em madeira" | Troca o veludo pela superfície pedida |
 | "divide em 2" | Força 2 stories (só no Instagram) |
