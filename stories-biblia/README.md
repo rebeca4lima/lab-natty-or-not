@@ -15,7 +15,7 @@ Usa as **mesmas regras do modelo de trechos de livros** (`stories-livros`): mesm
 |---|---|
 | `modelo-grifado.html` | A arte: página da Bíblia, grifo, foco, cores e luz |
 | `gerar.js` | Gera o PNG a partir de um pedido em JSON |
-| `pedidos/` | Pedidos em JSON (um por imagem) |
+| `pedidos/` | Pedidos em JSON (um por imagem); `pedidos/variacoes/` tem exemplos das cartas na manga |
 | `referencia/` | Mapa das zonas, exemplos e rascunhos da criação |
 | `saida/` | Imagens geradas (não vão para o Git) |
 | `modelo-fundo.html` | Rascunho de outro estilo (Bíblia de fundo + frase por cima), para depois |
@@ -28,31 +28,36 @@ Precisa de Node.js com Playwright e acesso à internet (para as fontes do Google
 node gerar.js pedidos/exemplo-salmos-23-4-1-instagram.json
 ```
 
-Exemplo de pedido:
+Exemplo de pedido (trecho longo, jeito B, que é o padrão):
 
 ```json
 {
-  "texto": "<p><sup>4</sup><span class=\"mt\">Ainda que eu ande pelo vale da sombra da morte, não temerei mal nenhum, porque tu estás comigo;</span> o teu bordão e o teu cajado me consolam.</p>",
+  "texto": "<p><sup>7</sup>Para onde poderia eu escapar do teu Espírito? … <sup>14</sup>Eu te louvo porque me fizeste de modo assombroso e admirável. As tuas obras são maravilhosas! Sei disso muito bem.</p>",
+  "grifo": "Eu te louvo porque me fizeste de modo assombroso e admirável.",
   "antes": "<p>…versículos anteriores…</p>",
   "depois": "<p>…versículos seguintes…</p>",
   "outraColuna": "<p>…texto da coluna ao lado…</p>",
-  "cabecalho": "Salmos 22, 23",
-  "pagina": "612",
-  "referencia": "Salmos 23:4",
-  "versao": "ARA",
+  "cabecalho": "Salmos 138, 139",
+  "pagina": "897",
+  "referencia": "Salmos 139:7-14",
+  "versao": "NVI",
   "plataforma": "instagram",
-  "saida": "saida/2026-11-18-salmos-23-4-1-instagram.png"
+  "saida": "saida/2026-11-18-salmos-139-7-14-1-instagram.png"
 }
 ```
 
-- `texto`: o trecho, na NVI. Parágrafos em `<p>`, número do versículo em `<sup>`, grifo em `<span class="mt">` (pode haver mais de um). "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
-- Trecho longo com grifo só numa frase: envolva o trecho todo em `<span class="foco">…</span>` (fica nítido e define o enquadramento) e a frase em `<span class="mt">`. Com `foco`, um traço de caneta na margem marca o trecho (desligue com `"traco": false`; ligue sem `foco` com `"traco": true`).
-- `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real.
+- `texto`: o trecho, na NVI, sem marcação. Parágrafos em `<p>`, número do versículo em `<sup>`. "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
+- `grifo`: a frase (ou lista de frases) que recebe marca-texto. Precisa estar escrita igual ao texto.
+- `jeito`: em branco, o script decide pelo tamanho do trecho: até 3 versículos e 300 letras é `grifo` (trecho nítido + grifo); a partir de 4 versículos ou 300 letras é `traco` (jeito B, com traço na margem). Carta na manga A: `"jeito": "tudo"`.
+- `dividir`: carta na manga C, `true` gera 2 stories no Instagram (`…-parte1.png` e `…-parte2.png`). No Instagram a divisão também acontece sozinha quando a letra precisaria ficar abaixo de 24 (desligue com `false`).
+- `traco`: `false` tira o traço na margem; `true` põe.
+- `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real. Preencha sempre o `depois`.
 - `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
 - `referencia` e `versao`: só para registro; não aparecem na imagem.
+- Avançado: o `texto` também pode vir com `<span class="mt">` (grifo) e `<span class="foco">` (nítido, sem grifo) prontos; aí `grifo` e `jeito` são ignorados.
 
 Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest-vertical`), `cor` do grifo (`vinho` padrão, `cereja`, `castanho`, `vermelho`), `superficie` (`veludo` padrão, `couro`, `madeira`), `tom` (`vinho` padrão, `quente`, `pb`), `minFonte` e `mapa` (`true` desenha o mapa de zonas). Ajustes finos: `giro`, `inclinacao`, `lado`, `focoX`, `focoY`, `desfoque`, `escuro`.
 
-O script informa o tamanho de letra usado e se o grifo coube (`{ fonte: 49, cabe: true }`). No Instagram, se `cabe` for `false`, divida o trecho em dois pedidos. No TikTok e no Pinterest a imagem é sempre única: o script avisa (`aviso`) quando a letra fica abaixo de 20 ou o trecho não cabe, e aí o ideal é encurtar.
+O script informa o tamanho de letra usado e se o trecho coube (`{ fonte: 37, cabe: true }`). No Instagram, se não couber com letra 24, ele mesmo divide em 2 stories. No TikTok e no Pinterest a imagem é sempre única: o script avisa (`aviso`) quando a letra fica abaixo de 20 ou o trecho não cabe, e aí o ideal é encurtar.
 
 Os pedidos seguem o mesmo padrão de nome do modelo de livros: `AAAA-MM-DD-<trecho>-1-instagram.json`, `-2-pinterest-vertical.json` e `-3-tiktok.json`.

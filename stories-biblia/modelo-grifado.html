@@ -140,7 +140,33 @@
 function rnd(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
 const senhor = h => h.replace(/\bSENHOR\b/g, '<span class="sc">Senhor</span>').replace(/\bDEUS\b/g, '<span class="sc">Deus</span>');
 
+// Monta o HTML do trecho conforme o "jeito":
+//   "grifo"  (padrão em trecho curto): trecho todo em foco, grifo nas frases de "grifo" (sem "grifo" = trecho todo grifado)
+//   "traco"  (padrão em trecho longo = jeito B): trecho todo em foco + traço na margem + grifo nas frases de "grifo"
+//   "tudo"   (carta na manga A): trecho todo grifado
+// Se o "texto" já vier com <span class="mt"> ou <span class="foco">, é usado como está.
+// Trecho longo = 4 versículos ou mais, ou mais de 300 letras.
+function prepararTexto(cfg) {
+  const t = cfg.texto;
+  if (/class="(mt|foco)"/.test(t)) return t;
+  const versos = (t.match(/<sup>/g) || []).length, letras = t.replace(/<[^>]+>/g, '').length;
+  const jeito = cfg.jeito || (versos >= 4 || letras > 300 ? 'traco' : 'grifo');
+  const frases = [].concat(cfg.grifo || []);
+  const envolver = (cls) => t.replace(/<p([^>]*)>([\s\S]*?)<\/p>/g, (_, a, dentro) => `<p${a}><span class="${cls}">${dentro}</span></p>`);
+  if (jeito === 'tudo' || (jeito === 'grifo' && !frases.length)) return envolver('mt');
+  let h = envolver('foco');
+  for (const fr of frases) {
+    // a frase pode atravessar o número de um versículo: aceita <sup>n</sup> entre as palavras
+    const rx = new RegExp(fr.trim().split(/\s+/).map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(?:\\s|<sup>\\d+</sup>)+'));
+    if (!rx.test(h)) throw new Error('frase para grifar não encontrada no trecho: ' + fr);
+    h = h.replace(rx, m => `<span class="mt">${m}</span>`);
+  }
+  if (jeito === 'grifo' && cfg.traco === undefined) cfg.traco = false;
+  return h;
+}
+
 window.montar = async (cfg, MAX, MIN, PISO) => {
+  cfg.texto = prepararTexto(cfg);
   const B = document.body;
   B.className = ['cru', 'tom-' + (cfg.tom || 'vinho'), cfg.plataforma || 'instagram', cfg.cor || 'vinho', cfg.superficie || 'veludo'].join(' ');
   const W = innerWidth, H = innerHeight;
@@ -152,7 +178,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   // coluna da esquerda: texto anterior (desfocado); coluna da direita: contexto + trecho + continuação
   c1.innerHTML = senhor(cfg.outraColuna || cfg.antes || '');
   c2.innerHTML = senhor((cfg.antes || '') + (cfg.titulo ? `<p class="titulo-secao">${cfg.titulo}</p>` : '') + cfg.texto + (cfg.depois || ''));
-  for (const c of [c1, c2]) for (let i = 0; i < 10 && c.scrollHeight < pag.clientHeight * 1.1; i++) c.insertAdjacentHTML('beforeend', senhor(cfg.depois || cfg.antes || ''));
+  for (const c of [c1, c2]) for (let i = 0; i < 10 && c.scrollHeight < pag.clientHeight * 1.1; i++) c.insertAdjacentHTML('beforeend', senhor((c === c2 ? cfg.depois || cfg.outraColuna : cfg.outraColuna || cfg.depois) || cfg.antes || ''));
   document.querySelector('.transparencia').innerHTML = `<div class="colunas"><div class="col">${c2.innerHTML}</div><div class="col">${c1.innerHTML}</div></div>`;
 
   // espessura do miolo (corte avermelhado)

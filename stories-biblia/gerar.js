@@ -5,9 +5,17 @@
 // Uso:  node gerar.js pedidos/exemplo.json
 //
 // Campos do pedido (só "texto" e "saida" são obrigatórios):
-//   texto      : HTML do trecho. Parágrafos em <p>...</p>, número do versículo em <sup>4</sup>.
-//                Grifo: <span class="mt">...</span>  (pode haver mais de um)
+//   texto      : HTML do trecho (NVI). Parágrafos em <p>...</p>, número do versículo em <sup>4</sup>.
 //                "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
+//   grifo      : frase (ou lista de frases) do trecho que recebe marca-texto
+//   jeito      : "traco" -> trecho nítido + traço na margem + grifo nas frases   (padrão em trecho longo: jeito B)
+//                "grifo" -> trecho nítido + grifo nas frases, sem traço         (padrão em trecho curto)
+//                "tudo"  -> trecho todo grifado                                 (carta na manga A)
+//                Trecho longo = 4 versículos ou mais, ou mais de 300 letras.
+//                (Avançado: o texto também pode vir com <span class="mt"> e <span class="foco"> prontos.)
+//   dividir    : true -> 2 stories, cortando no fim de um versículo perto da metade (carta na manga C; só Instagram)
+//                No Instagram isso também acontece sozinho quando a letra precisaria ficar abaixo de 24.
+//                Cada parte sai com o trecho todo grifado (jeito "tudo"), a não ser que "jeito" seja informado.
 //   antes      : versículos que vêm antes do trecho, na mesma coluna (ficam desfocados)
 //   depois     : versículos que vêm depois do trecho
 //   outraColuna: texto da coluna da esquerda (desfocada)
@@ -33,30 +41,61 @@ const MAX = 50;
 const MIN_PLATAFORMA = { instagram: 24, tiktok: 20, pinterest: 20, 'pinterest-vertical': 20 };
 const LIMITE_ABSOLUTO = 16;
 
+// Divide o trecho em 2 partes no fim de um versículo, o mais perto possível da metade (em letras)
+function dividirTexto(texto) {
+  const plano = texto.replace(/<\/p>\s*<p[^>]*>/g, ' ').replace(/^\s*<p[^>]*>|<\/p>\s*$/g, '');
+  const cortes = [...plano.matchAll(/<sup>/g)].map(m => m.index).filter(i => i > 0);
+  if (!cortes.length) throw new Error('não há como dividir: o trecho tem um versículo só');
+  const letras = h => h.replace(/<[^>]+>/g, '').length, total = letras(plano);
+  const i = cortes.reduce((m, c) => Math.abs(letras(plano.slice(0, c)) - total / 2) < Math.abs(letras(plano.slice(0, m)) - total / 2) ? c : m);
+  return [`<p>${plano.slice(0, i).trim()}</p>`, `<p>${plano.slice(i).trim()}</p>`];
+}
+const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
+
 (async () => {
   const cfg = JSON.parse(fs.readFileSync(path.resolve(process.argv[2]), 'utf8'));
-  const plataforma = cfg.plataforma || 'instagram';
-  const MIN = cfg.minFonte || MIN_PLATAFORMA[plataforma] || 24;
-  const umaSo = plataforma !== 'instagram';
-  const estilo = cfg.estilo || 'grifado';
-
   const b = await chromium.launch();
-  const pin = plataforma === 'pinterest';
-  const p = await b.newPage({ viewport: pin ? { width: 1000, height: 1500 } : { width: 1080, height: 1920 } });
-  await p.goto('file://' + path.join(__dirname, `modelo-${estilo}.html`));
-  await p.waitForLoadState('networkidle');
 
-  // 1) monta a cena nítida  2) "fotografa"  3) aplica foco progressivo, tom e granulado
-  const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo ? LIMITE_ABSOLUTO : MIN]);
-  if (!r.cabe) r.aviso = umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
-  else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
-  const cru = await p.screenshot();
-  await p.evaluate(s => window.finalizar(s), 'data:image/png;base64,' + cru.toString('base64'));
-  if (cfg.mapa) await p.evaluate(MIN => window.mapa && window.mapa(MIN), MIN);
+  const gerarUm = async (cfg) => {
+    const plataforma = cfg.plataforma || 'instagram';
+    const MIN = cfg.minFonte || MIN_PLATAFORMA[plataforma] || 24;
+    const umaSo = plataforma !== 'instagram';
+    const pin = plataforma === 'pinterest';
+    const p = await b.newPage({ viewport: pin ? { width: 1000, height: 1500 } : { width: 1080, height: 1920 } });
+    await p.goto('file://' + path.join(__dirname, `modelo-${cfg.estilo || 'grifado'}.html`));
+    await p.waitForLoadState('networkidle');
+    // 1) monta a cena nítida  2) "fotografa"  3) aplica foco progressivo, tom e granulado
+    const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo ? LIMITE_ABSOLUTO : MIN]);
+    if (!r.cabe) r.aviso = umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
+    else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
+    const cru = await p.screenshot();
+    await p.evaluate(s => window.finalizar(s), 'data:image/png;base64,' + cru.toString('base64'));
+    if (cfg.mapa) await p.evaluate(MIN => window.mapa && window.mapa(MIN), MIN);
+    const out = path.resolve(__dirname, cfg.saida);
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    await p.screenshot({ path: out });
+    await p.close();
+    console.log(path.relative(__dirname, out), r);
+    return r;
+  };
 
-  const out = path.resolve(__dirname, cfg.saida);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  await p.screenshot({ path: out });
-  console.log(path.relative(__dirname, out), r);
+  const gerarDividido = async (cfg) => {
+    const [t1, t2] = dividirTexto(cfg.texto);
+    const jeito = cfg.jeitoDividido || cfg.jeito || 'tudo';
+    const base = { ...cfg, dividir: false, jeito };
+    await gerarUm({ ...base, texto: t1, depois: t2 + (cfg.depois || ''), saida: parte(cfg.saida, 1) });
+    await gerarUm({ ...base, texto: t2, antes: (cfg.antes || '') + t1, saida: parte(cfg.saida, 2) });
+  };
+
+  const instagram = (cfg.plataforma || 'instagram') === 'instagram';
+  if (cfg.dividir && instagram) await gerarDividido(cfg);
+  else {
+    const r = await gerarUm(cfg);
+    if (instagram && !r.cabe && cfg.dividir !== false) {
+      console.log('→ não coube em 1 story com letra 24: dividindo em 2');
+      fs.rmSync(path.resolve(__dirname, cfg.saida), { force: true });
+      await gerarDividido(cfg);
+    }
+  }
   await b.close();
 })();

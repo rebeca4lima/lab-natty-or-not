@@ -11,7 +11,8 @@ Uma foto "espontânea" de uma Bíblia aberta: a página em close e na diagonal, 
 | Elemento | Como é |
 |---|---|
 | Página | Papel bíblia creme, duas colunas, cabeçalho ("SALMOS 22, 23") e número da página, números dos versículos, títulos de seção, número grande do capítulo, "Senhor" em versalete e o verso da folha aparecendo de leve por transparência |
-| Trecho | Na coluna da direita, nítido, com grifo de marca-texto (borda irregular, levemente torto, mais forte no fim do traço) |
+| Trecho | Na coluna da direita, todo nítido, com grifo de marca-texto onde você pedir (borda irregular, levemente torto, mais forte no fim do traço) |
+| Traço na margem | Em trecho longo: risco de caneta vinho na margem, do começo ao fim do trecho |
 | Foco | Faixa nítida em volta do trecho; o desfoque aumenta aos poucos, em 9 níveis, para cima e para baixo |
 | Luz e cor | Luz baixa e quente no trecho; bordas em vinho escuro; granulado de filme |
 | Em volta | Veludo vinho, capa de couro e corte das folhas avermelhado (aparecem no canto da imagem) |
@@ -23,13 +24,15 @@ Uma foto "espontânea" de uma Bíblia aberta: a página em close e na diagonal, 
 |---|---|
 | Formato | PNG 1080 × 1920 |
 | Versão | **NVI**, sempre (inclusive os versículos vizinhos que completam a página) |
-| Grifo | Vinho |
+| Grifo | Vinho, na frase que você pedir (sem frase = trecho curto todo grifado) |
+| Trecho curto (até 3 versículos e até 300 letras) | Trecho nítido + grifo |
+| Trecho longo (4 versículos ou mais, ou mais de 300 letras) | **Jeito B:** trecho nítido + traço na margem + grifo na frase-chave |
 | Tom | Vinho (luz baixa, bordas escuras) |
 | Superfície | Veludo vinho |
 | Tamanho da letra | Automático: começa em 50 px e diminui até o trecho grifado caber na área livre (mínimo por rede: veja abaixo) |
 | Texto | Transcrito fielmente, sem mudar as palavras |
 | Contexto da página | Eu completo com os versículos vizinhos (antes, depois e a coluna ao lado), que ficam desfocados |
-| Divisão | Só no Instagram: vira 2 stories se a letra precisar ficar menor que 24 px, cortando no fim de um versículo. TikTok e Pinterest: sempre 1 imagem |
+| Divisão | Só no Instagram: vira 2 stories **automaticamente** se a letra precisar ficar menor que 24 px, cortando no fim de um versículo perto da metade. TikTok e Pinterest: sempre 1 imagem |
 
 ## Letra mínima e divisão por rede
 
@@ -41,19 +44,21 @@ Uma foto "espontânea" de uma Bíblia aberta: a página em close e na diagonal, 
 
 No TikTok e no Pinterest, se o trecho não couber nem com letra 20, a letra continua diminuindo até 16 e eu aviso. Nesse caso, o ideal é encurtar o trecho.
 
-Os exemplos: Salmos 23:4 coube com letra 49 (Instagram e TikTok) e 43 (Pinterest vertical). 1 Coríntios 13:4-7 inteiro, com dois grifos, coube com 47 e 42.
+Nos exemplos, Salmos 23:4 coube com letra 48 (Instagram e TikTok) e 42 (Pinterest vertical). 1 Coríntios 13:4-7, com dois grifos, coube com 44 e 39. Salmos 139:7-14 (8 versículos) coube com 37 e 33. Num teste com 18 versículos, o Instagram dividiu sozinho em 2 stories (letra 35 e 34).
 
-## Trechos longos
+## Trechos longos: o padrão e as cartas na manga
 
-Teste com Salmos 139:7-14 (8 versículos): [referencia/teste-trecho-longo-salmos-139.png](referencia/teste-trecho-longo-salmos-139.png)
+![Padrão B e cartas na manga A e C](referencia/jeitos-trecho-longo.png)
 
-| Jeito | Como fica | Letra no teste |
-|---|---|---|
-| **A · Trecho inteiro grifado** | Todas as linhas do trecho com marca-texto | 37 (Instagram e TikTok), 33 (Pinterest vertical) |
-| **B · Traço na margem + grifo na frase-chave** | O trecho todo fica nítido, com um traço de caneta vinho na margem do começo ao fim; o marca-texto só na frase que você escolher | 37 / 33 |
-| **C · Instagram em 2 stories** | Cada story com metade do trecho grifado, letra maior (só no Instagram; TikTok e Pinterest continuam em 1 imagem) | 44 e 43 |
+| | Jeito | Como fica | Como pedir |
+|---|---|---|---|
+| **Padrão** | **B · Traço na margem + grifo na frase-chave** | Trecho todo nítido, traço de caneta vinho na margem do começo ao fim, marca-texto só na frase-chave | É o padrão em trecho longo: basta mandar o trecho e dizer a frase. Se você não disser, eu escolho a frase mais marcante e te aviso qual foi |
+| Carta na manga | **A · Tudo grifado** | Marca-texto em todas as linhas do trecho | "tudo grifado" |
+| Carta na manga | **C · Em 2 stories** | Instagram em 2 stories, cada um com metade do trecho todo grifado, letra maior. TikTok e Pinterest continuam em 1 imagem | "em 2 stories" (ou "divide em 2") |
 
-Até uns 8 versículos cabem em 1 imagem com folga (acima do mínimo de 24/20). Acima disso, no Instagram, eu divido em 2 stories.
+As cartas na manga combinam: "em 2 stories com traço" faz cada story no jeito B.
+
+Exemplo do padrão nas 3 redes: [referencia/exemplo-salmos-139-7-14.png](referencia/exemplo-salmos-139-7-14.png)
 
 ## Áreas livres (iguais ao modelo de livros)
 
@@ -70,20 +75,20 @@ O trecho grifado fica sempre **inteiro dentro da área livre**. A página da Bí
 
 | Você diz | Resultado |
 |---|---|
-| "[versículo] grifa [frase]" | Grifo vinho só na frase pedida |
+| "[referência], grifa [frase]" | Grifo vinho só na frase pedida |
 | "grifa [frase 1] e [frase 2]" | Dois (ou mais) grifos separados no mesmo trecho |
-| "trecho inteiro grifado" | Jeito A: marca-texto em todas as linhas |
-| "traço na margem, grifa [frase]" | Jeito B: trecho nítido com traço de caneta na margem e grifo só na frase |
+| "tudo grifado" | Carta na manga A: marca-texto em todas as linhas |
+| "em 2 stories" / "divide em 2" | Carta na manga C: 2 stories no Instagram |
+| "sem traço" / "com traço" | Tira ou põe o traço na margem |
 | "grifo cereja / castanho / vermelho" | Grifo nessa cor |
 | "em couro" / "em madeira" | Troca o veludo pela superfície pedida |
-| "divide em 2" | Força 2 stories (só no Instagram) |
 | "só até [palavra]" / "começa em [palavra]" | Corto o trecho onde você indicar |
 
 **Exemplo de pedido:**
 
-> Salmos 23:4 (ARA), grifa "Ainda que eu ande pelo vale da sombra da morte, não temerei mal nenhum, porque tu estás comigo"
+> [print] Salmos 139:7-14, grifa "Eu te louvo porque me fizeste de modo assombroso e admirável"
 
-Resultado: [referencia/exemplo-salmos-23-4.png](referencia/exemplo-salmos-23-4.png)
+Resultado: [referencia/exemplo-salmos-139-7-14.png](referencia/exemplo-salmos-139-7-14.png)
 
 ## Paleta
 
@@ -106,3 +111,4 @@ Resultado: [referencia/exemplo-salmos-23-4.png](referencia/exemplo-salmos-23-4.p
 
 - [rascunhos-v1.png](referencia/rascunhos-v1.png): primeiros caminhos (página grifada × frase sobre a Bíblia).
 - [rascunhos-v2-grifado.png](referencia/rascunhos-v2-grifado.png): cores da marca. Escolhido o **vinho**, sem fita marcadora e sem assinatura.
+- [jeitos-trecho-longo.png](referencia/jeitos-trecho-longo.png): trecho longo. Escolhido o **B** como padrão; A e C ficam como cartas na manga.
