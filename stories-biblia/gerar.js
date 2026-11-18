@@ -16,6 +16,11 @@
 //   dividir    : true -> 2 stories, cortando no fim de um versículo perto da metade (carta na manga C; só Instagram)
 //                No Instagram isso também acontece sozinho quando a letra precisaria ficar abaixo de 24.
 //                Cada parte sai com o trecho todo grifado (jeito "tudo"), a não ser que "jeito" seja informado.
+//   citacao    : como mostrar de onde vem o versículo (usa "referencia" e "versao"):
+//                "cabecalho" -> nome do livro · versão + número do capítulo grande no alto da página (o trecho começa logo abaixo)
+//                "caixinha"  -> etiqueta creme com a referência e uma seta até o começo do trecho
+//                "mao"       -> referência em letra à mão com seta (fica pouco legível sobre o papel claro)
+//                sem citacao -> nada (só o que já aparece na página)
 //   antes      : versículos que vêm antes do trecho, na mesma coluna (ficam desfocados)
 //   depois     : versículos que vêm depois do trecho
 //   outraColuna: texto da coluna da esquerda (desfocada)

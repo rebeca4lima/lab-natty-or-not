@@ -51,9 +51,10 @@ Exemplo de pedido (trecho longo, jeito B, que é o padrão):
 - `jeito`: em branco, o script decide pelo tamanho do trecho: até 3 versículos e 300 letras é `grifo` (trecho nítido + grifo); a partir de 4 versículos ou 300 letras é `traco` (jeito B, com traço na margem). Carta na manga A: `"jeito": "tudo"`.
 - `dividir`: carta na manga C, `true` gera 2 stories no Instagram (`…-parte1.png` e `…-parte2.png`). No Instagram a divisão também acontece sozinha quando a letra precisaria ficar abaixo de 24 (desligue com `false`).
 - `traco`: `false` tira o traço na margem; `true` põe.
+- `citacao` (em teste): `cabecalho` (livro · versão e número do capítulo grande no alto da página), `caixinha` (etiqueta com seta) ou `mao` (letra à mão com seta). Usa `referencia` e `versao`.
 - `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real. Preencha sempre o `depois`.
 - `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
-- `referencia` e `versao`: só para registro; não aparecem na imagem.
+- `referencia` e `versao`: aparecem na imagem só quando há `citacao`.
 - Avançado: o `texto` também pode vir com `<span class="mt">` (grifo) e `<span class="foco">` (nítido, sem grifo) prontos; aí `grifo` e `jeito` são ignorados.
 
 Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest-vertical`), `cor` do grifo (`vinho` padrão, `cereja`, `castanho`, `vermelho`), `superficie` (`veludo` padrão, `couro`, `madeira`), `tom` (`vinho` padrão, `quente`, `pb`), `minFonte` e `mapa` (`true` desenha o mapa de zonas). Ajustes finos: `giro`, `inclinacao`, `lado`, `focoX`, `focoY`, `desfoque`, `escuro`.

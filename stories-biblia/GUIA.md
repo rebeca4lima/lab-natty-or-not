@@ -60,6 +60,16 @@ As cartas na manga combinam: "em 2 stories com traço" faz cada story no jeito B
 
 Exemplo do padrão nas 3 redes: [referencia/exemplo-salmos-139-7-14.png](referencia/exemplo-salmos-139-7-14.png)
 
+## Citação: de onde vem o versículo (em teste)
+
+![3 jeitos de citar](referencia/citacao-3-opcoes.png)
+
+| Jeito | Como fica | Mostra |
+|---|---|---|
+| **1 · Cabeçalho em evidência** (`"citacao": "cabecalho"`) | No alto da página: "SALMOS · NVI" e o número do capítulo grande; o trecho começa logo abaixo, como uma página que começa ali | Livro, capítulo, versão; os versículos aparecem nos números do próprio texto. Nenhum texto por cima da foto |
+| **2 · Caixinha com seta** (`"citacao": "caixinha"`) | Etiqueta creme "Salmos 139:7-14 · NVI" logo acima do trecho, com seta curta até o começo | Tudo, por extenso |
+| **3 · Letra à mão com seta** (`"citacao": "mao"`) | Igual à 2, em letra à mão creme, sem caixa | Tudo, mas fica pouco legível sobre o papel claro |
+
 ## Áreas livres (iguais ao modelo de livros)
 
 | Área | Instagram | TikTok | Pinterest vertical |
