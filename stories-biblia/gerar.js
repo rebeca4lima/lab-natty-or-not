@@ -4,6 +4,8 @@
 // Uso:  node gerar.js pedidos/exemplo.json
 //
 // Campos do pedido (todos opcionais, exceto "texto" e "saida"):
+//   estilo    : "grifado" (Bíblia aberta em close, com o trecho marcado) | "fundo" (Bíblia desfocada embaixo, frase por cima)
+//               sem estilo -> modelo.html (rascunho v0, card de app)
 //   texto     : HTML do trecho. Parágrafos em <p>...</p>.
 //               Marca-texto: <span class="mt">...</span>   Negrito: <b>...</b>   Número do versículo: <sup>16</sup>
 //   referencia: livro, capítulo e versículos (ex.: "João 3:16" ou "Salmos 23:1-3")
@@ -38,6 +40,24 @@ const LIMITE_ABSOLUTO = 16;
   const plataforma = cfg.plataforma || 'instagram';
   const MIN = cfg.minFonte || MIN_PLATAFORMA[plataforma] || 24;
   const umaSo = plataforma !== 'instagram';
+
+  // Modelos com foto da Bíblia: 1) monta a cena nítida  2) fotografa  3) aplica foco, tom, granulado e textos
+  if (cfg.estilo) {
+    await p.goto('file://' + path.join(__dirname, `modelo-${cfg.estilo}.html`));
+    await p.waitForLoadState('networkidle');
+    const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo ? LIMITE_ABSOLUTO : MIN]);
+    if (!r.cabe) r.aviso = umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
+    else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
+    const cru = await p.screenshot();
+    await p.evaluate(s => window.finalizar(s), 'data:image/png;base64,' + cru.toString('base64'));
+    const out = path.resolve(__dirname, cfg.saida);
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    await p.screenshot({ path: out });
+    console.log(path.relative(__dirname, out), r);
+    await b.close();
+    return;
+  }
+
   const r = await p.evaluate(async ([cfg, MAX, MIN, PISO]) => {
     const cls = [];
     if (cfg.cor && cfg.cor !== 'rosa') cls.push(cfg.cor);

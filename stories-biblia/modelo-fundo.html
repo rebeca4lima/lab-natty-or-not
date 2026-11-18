@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* ===== Modelo 2 · "Frase sobre a Bíblia": Bíblia aberta desfocada embaixo, frase por cima ===== */
+  :root { --W: 1080px; --H: 1920px; --papel: #EFEAE0; --tinta: #2A241F; --fundo1: #121110; --fundo2: #2B2824; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: var(--W); height: var(--H); overflow: hidden; background: #000; }
+  body.pinterest { --W: 1000px; --H: 1500px; }
+  body.claro { --fundo1: #E9E4DB; --fundo2: #D6CFC3; }
+
+  #palco { position: absolute; inset: 0; overflow: hidden; }
+  .camada { position: absolute; inset: 0; }
+  .parede { position: absolute; inset: 0;
+    background: radial-gradient(90% 45% at 62% 18%, rgba(255,255,255,.07), rgba(255,255,255,0) 70%),
+                linear-gradient(180deg, var(--fundo1) 0%, var(--fundo2) 62%, var(--fundo2) 100%); }
+  .mesa { position: absolute; left: -10%; right: -10%; bottom: -5%; height: 46%; background: linear-gradient(180deg, #3A3631, #57524A); }
+  body.claro .mesa { background: linear-gradient(180deg, #CFC8BB, #E6E0D5); }
+
+  .mundo { position: absolute; inset: 0; perspective: 1300px; }
+  .livro { position: absolute; transform-style: preserve-3d; font-size: var(--f, 22px); width: 73.6em; height: 54em; }
+  .capa { position: absolute; inset: -.5em -.9em -.9em -.9em; background: #1E1916; border-radius: .35em; transform: translateZ(-2.2em); }
+  .bloco { position: absolute; inset: 0 .2em -.1em .2em; background: repeating-linear-gradient(180deg, #E4DED2 0 2px, #CFC7B9 2px 3px); transform: translateZ(-1.1em); }
+  /* cada página é uma corrente de tiras dobradas: sobe a partir da lombada e vai aplanando */
+  .lado { position: absolute; top: 0; left: 50%; width: 0; height: 100%; transform-style: preserve-3d; }
+  .tira { position: absolute; top: 0; height: 100%; transform-style: preserve-3d; }
+  .dir .tira { transform-origin: left center; }
+  .esq .tira { transform-origin: right center; }
+  .recorte { position: absolute; inset: 0; overflow: hidden; }
+  .recorte .pagina { position: absolute; top: 0; }
+  .sombra { position: absolute; inset: 0; z-index: 5; mix-blend-mode: multiply; pointer-events: none; }
+  .pagina { width: 36.8em; height: 54em; background: var(--papel); overflow: hidden;
+            padding: 2.4em 2.2em 0; color: var(--tinta); font-family: 'Crimson Pro', serif; }
+  .cabeco { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: .56em; letter-spacing: .06em; margin-bottom: 1.3em; display: flex; justify-content: space-between; }
+  .colunas { display: flex; gap: 1.6em; }
+  .col { width: 15.6em; flex-shrink: 0; line-height: 1.3; text-align: justify; hyphens: auto; }
+  .col p { text-indent: .9em; }
+  .col sup { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: .5em; vertical-align: .75em; line-height: 0; margin-right: .18em; }
+  .titulo-secao { font-family: 'Open Sans', sans-serif; font-weight: 800; font-size: .74em; margin: .9em 0 .35em; text-indent: 0 !important; }
+  .cap { float: left; font-family: 'Open Sans', sans-serif; font-weight: 800; font-size: 2.6em; line-height: .82; margin: .04em .12em -.05em 0; }
+  .sc { font-variant: small-caps; }
+
+  #foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  body.tom-pb #foto     { filter: grayscale(1) contrast(1.1) brightness(.95); }
+  body.tom-sepia #foto  { filter: sepia(.6) saturate(.75) contrast(1.05) brightness(.9) hue-rotate(-8deg); }
+  body.tom-quente #foto { filter: sepia(.25) saturate(.85) contrast(1.03); }
+  #escurece { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 45%), radial-gradient(140% 100% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
+  body.claro #escurece { background: radial-gradient(140% 100% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.18) 100%); }
+  #grao { position: absolute; inset: 0; pointer-events: none; opacity: .42; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='9' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  body.cru #escurece, body.cru #grao, body.cru #frase { visibility: hidden; }
+
+  /* a frase */
+  #frase { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #F4F1EC; }
+  #texto { font-family: 'EB Garamond', serif; line-height: 1.28; text-wrap: balance; text-shadow: 0 1px 10px rgba(0,0,0,.35); }
+  #texto p + p { margin-top: .5em; }
+  #texto .mt { background: rgba(196,150,60,.75); color: #fff; padding: .02em .22em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  #referencia { font-family: 'EB Garamond', serif; font-size: .72em; margin-top: .55em; letter-spacing: .03em; opacity: .92; }
+  #enfeite { margin-top: .7em; font-size: .62em; opacity: .95; }
+  body.claro #frase { color: #2A241F; } body.claro #texto { text-shadow: none; }
+  body.mao #texto { font-family: 'Caveat', cursive; line-height: 1.12; }
+
+  .safe { position: absolute; top: 250px; bottom: 250px; left: 150px; right: 150px; pointer-events: none; }
+  body.tiktok .safe { top: 150px; bottom: 450px; }
+  body.pinterest .safe { top: 100px; bottom: 100px; left: 110px; right: 110px; }
+  body.pinterest-vertical .safe { top: 270px; bottom: 440px; left: 195px; right: 195px; }
+</style>
+</head>
+<body>
+<div id="palco">
+  <div class="camada" id="cena">
+    <div class="parede"></div>
+    <div class="mesa"></div>
+    <div class="mundo"><div class="livro">
+      <div class="capa"></div><div class="bloco"></div>
+      <div class="lado esq"></div>
+      <div class="lado dir"></div>
+    </div></div>
+  </div>
+  <div class="camada" id="foto"></div>
+  <div id="escurece"></div>
+  <div id="grao"></div>
+</div>
+<div class="safe"></div>
+<div id="frase"><div id="texto"></div><div id="referencia"></div><div id="enfeite"></div></div>
+
+<script>
+const senhor = h => h.replace(/\bSENHOR\b/g, '<span class="sc">Senhor</span>');
+// texto de enchimento das páginas desfocadas (só aparece borrado)
+const ENCHE = '<p><sup>1</sup>Bem-aventurado o homem que não anda no conselho dos ímpios, não se detém no caminho dos pecadores, nem se assenta na roda dos escarnecedores. <sup>2</sup>Antes, o seu prazer está na lei do SENHOR, e na sua lei medita de dia e de noite.</p><p><sup>3</sup>Ele é como árvore plantada junto a corrente de águas, que, no devido tempo, dá o seu fruto, e cuja folhagem não murcha; e tudo quanto ele faz será bem-sucedido.</p><p class="titulo-secao">O reino do Messias</p><p><span class="cap">2</span>Por que se enfurecem os gentios e os povos imaginam coisas vãs? <sup>2</sup>Os reis da terra se levantam, e os príncipes conspiram contra o SENHOR e contra o seu Ungido, dizendo: <sup>3</sup>Rompamos os seus laços e sacudamos de nós as suas algemas.</p>';
+
+window.montar = async (cfg, MAX, MIN, PISO) => {
+  const B = document.body;
+  B.className = ['cru', 'tom-' + (cfg.tom || 'pb'), cfg.plataforma || 'instagram', cfg.claro ? 'claro' : '', cfg.letra === 'mao' ? 'mao' : ''].join(' ');
+  const W = innerWidth, H = innerHeight;
+  const safe = document.querySelector('.safe').getBoundingClientRect();
+
+  // páginas curvas: N tiras encadeadas; ângulos relativos (a 1a sobe a partir da lombada, as outras aplanam)
+  const cab = (cfg.cabecalho || 'SALMOS 1, 2').toUpperCase();
+  const t = senhor(cfg.enchimento || ENCHE);
+  const pagHTML = (i) => `<div class="pagina"><div class="cabeco"><span>${i ? '' : '574'}</span><span>${cab}</span><span>${i ? '575' : ''}</span></div><div class="colunas"><div class="col">${t + t + t}</div><div class="col">${t + t + t}</div></div></div>`;
+  const ANG = cfg.curva || [-26, 9, 6, 4, 3, 2, 1, 1, 0, 0, -1, -1];
+  const livro = document.querySelector('.livro');
+  livro.style.setProperty('--f', (cfg.letraPagina || 16) + 'px');
+  const fpx = cfg.letraPagina || 16, PW = 36.8 * fpx, N = ANG.length, sw = PW / N;
+  for (const [lado, sinal] of [['dir', 1], ['esq', -1]]) {
+    const raiz = document.querySelector('.lado.' + lado); raiz.innerHTML = '';
+    let pai = raiz;
+    for (let i = 0; i < N; i++) {
+      const tr = document.createElement('div'); tr.className = 'tira';
+      tr.style.width = sw + 'px';
+      tr.style.left = sinal > 0 ? (i ? sw : 0) + 'px' : (i ? -sw : -sw) + 'px';
+      tr.style.transform = `rotateY(${ANG[i] * sinal}deg)`;
+      const dist = i / N; // 0 = lombada
+      const sombra = Math.max(0, .42 - dist * 1.6) + (i === 0 ? .12 : 0);
+      const off = sinal > 0 ? -i * sw : -(N - 1 - i) * sw;
+      tr.innerHTML = `<div class="recorte"><div style="position:absolute;top:0;left:${off}px">${pagHTML(sinal > 0 ? 1 : 0)}</div>` +
+        `<div class="sombra" style="background:linear-gradient(${sinal > 0 ? 90 : 270}deg, rgba(45,30,18,${sombra}), rgba(45,30,18,${Math.max(0, sombra - .12)}))"></div></div>`;
+      pai.appendChild(tr); pai = tr;
+    }
+  }
+
+  // câmera baixa: a Bíblia fica deitada na metade de baixo e sai pelas bordas
+  const horizonte = cfg.horizonte ?? (H * .58);            // onde fica a borda de trás da Bíblia
+  const pw = livro.offsetWidth, ph = livro.offsetHeight;
+  livro.style.left = (W / 2 - pw / 2 + (cfg.deslocaX ?? 120)) + 'px';
+  livro.style.top = horizonte + 'px';
+  livro.style.transformOrigin = `${pw / 2}px 0px`;
+  document.querySelector('.mundo').style.perspectiveOrigin = `${W / 2}px ${horizonte - 380}px`;
+  livro.style.transform = `translateZ(${cfg.aproxima ?? 260}px) rotateX(${cfg.inclinacao ?? 70}deg) rotateZ(${cfg.giro ?? -8}deg)`;
+  const lb = document.querySelector('.capa').getBoundingClientRect();
+  window.__foco = { y: cfg.focoY ?? Math.min(H - 120, lb.top + (H - lb.top) * .42), desf: cfg.desfoque ?? 1 };
+
+  // frase: centralizada no espaço livre acima da Bíblia, letra automática
+  const fr = document.getElementById('frase');
+  document.getElementById('texto').innerHTML = cfg.texto;
+  document.getElementById('referencia').textContent = (cfg.referencia || '') + (cfg.versao && cfg.mostrarVersao !== false ? ' · ' + cfg.versao : '');
+  document.getElementById('enfeite').innerHTML = cfg.enfeite ?? '♥';
+  const base = Math.min(safe.bottom, lb.top - 70), topo = Math.max(safe.top, base - (cfg.alturaFrase ?? 640));
+  const larg = safe.width * (cfg.largura ?? .92);
+  fr.style.left = (W / 2 - larg / 2) + 'px'; fr.style.width = larg + 'px';
+  fr.style.top = topo + 'px'; fr.style.height = (base - topo) + 'px';
+  fr.style.justifyContent = cfg.alinhar === 'baixo' ? 'flex-end' : 'center';
+  await document.fonts.ready;
+  const tx = document.getElementById('texto');
+  let f = MAX; const set = v => fr.style.fontSize = v + 'px'; set(f);
+  const transborda = () => fr.scrollHeight > fr.clientHeight + 1;
+  while (transborda() && f > PISO) { f--; set(f); }
+  return { fonte: f, cabe: !transborda() };
+};
+
+window.finalizar = async (src) => {
+  const { y, desf } = window.__foco;
+  const foto = document.getElementById('foto'); foto.innerHTML = '';
+  for (const [blur, n, s] of [[10 * desf, 0, 0], [4 * desf, 140, 260], [0, 40, 150]]) {
+    const im = new Image(); im.src = src; await im.decode();
+    if (blur) { im.style.filter = `blur(${blur}px)`; im.style.transform = 'scale(1.03)'; }
+    if (n) im.style.webkitMaskImage = im.style.maskImage = `linear-gradient(180deg, transparent ${y - n - s}px, #000 ${y - n}px, #000 ${y + n}px, transparent ${y + n + s}px)`;
+    foto.appendChild(im);
+  }
+  document.getElementById('cena').style.display = 'none';
+  document.body.classList.remove('cru');
+};
+</script>
+</body>
+</html>

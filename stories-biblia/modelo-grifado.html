@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Open+Sans:wght@600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== Modelo 1 · "Grifado": página da Bíblia em close, com o trecho marcado ===== */
+  :root {
+    --W: 1080px; --H: 1920px;
+    --papel: #F4EFE4; --tinta: #26211C; --tinta-suave: #5E554B;
+    --mt: rgba(252,206,70,.72);          /* marca-texto (amarelo) */
+    --mt-borda: rgba(236,170,30,.6);
+    --superficie: #CFC6B8;
+    --capa: #3B2A20;
+  }
+  body.rosa    { --mt: rgba(247,140,175,.62); --mt-borda: rgba(230,110,150,.5); }
+  body.laranja { --mt: rgba(250,190,120,.6);  --mt-borda: rgba(235,150,70,.5); }
+  body.azul    { --mt: rgba(150,195,240,.55); --mt-borda: rgba(100,160,220,.5); }
+  body.verde   { --mt: rgba(170,225,160,.55); --mt-borda: rgba(120,190,110,.5); }
+  body.lilas   { --mt: rgba(200,175,240,.55); --mt-borda: rgba(160,130,220,.5); }
+  body.amarelo { }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: var(--W); height: var(--H); overflow: hidden; background: #000; }
+  body.pinterest { --W: 1000px; --H: 1500px; }
+
+  #palco { position: absolute; inset: 0; overflow: hidden; }
+  .camada { position: absolute; inset: 0; }
+
+  /* superfície onde a Bíblia está (manta, linho, madeira) */
+  .superficie { position: absolute; inset: -60px; background: var(--superficie); }
+  .superficie::after { content: ""; position: absolute; inset: 0; opacity: .55; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='4' seed='7'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); background-size: 600px 600px; }
+  body.madeira .superficie { background: #6B4A33; }
+  body.madeira .superficie::after { opacity: .7;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.003 .09' numOctaves='3' seed='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); background-size: 800px 800px; }
+  body.escuro .superficie { background: #1A1715; }
+
+  .mundo { position: absolute; inset: 0; perspective: 2000px; }
+  .livro { position: absolute; transform-style: preserve-3d; font-size: var(--f, 40px); }
+  .capa { position: absolute; inset: -.5em -.6em -.5em -.2em; background: var(--capa); border-radius: .25em;
+          transform: translateZ(-1.2em); box-shadow: 0 1.2em 2.6em rgba(0,0,0,.45); }
+  .folha { position: absolute; inset: 0; background: #E6DFD1; border-right: 1px solid rgba(80,60,40,.18); border-bottom: 1px solid rgba(80,60,40,.18); }
+
+  .pagina { position: relative; width: 36.8em; height: 54em; background: var(--papel); overflow: hidden;
+            padding: 2.4em 1.9em 0 2.6em; color: var(--tinta); font-family: 'Crimson Pro', serif; }
+  /* textura do papel + luz + sombra da lombada (à esquerda) */
+  .pagina::before { content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; mix-blend-mode: multiply; opacity: .9;
+    background:
+      linear-gradient(90deg, rgba(60,40,20,.30) 0, rgba(60,40,20,.10) 2.5%, rgba(60,40,20,0) 9%),
+      radial-gradient(120% 90% at 65% 35%, rgba(255,255,255,0) 40%, rgba(90,70,50,.16) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='2'/><feColorMatrix type='matrix' values='0 0 0 0 .85  0 0 0 0 .8  0 0 0 0 .72  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .cabeco { position: absolute; top: 1.05em; left: 2.6em; right: 1.9em; display: flex; justify-content: space-between;
+            font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: .56em; letter-spacing: .06em; color: var(--tinta); }
+  .colunas { position: relative; z-index: 2; display: flex; gap: 1.7em; height: 100%; }
+  .col { width: 15.3em; flex-shrink: 0; font-size: 1em; line-height: 1.3; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+  .col + .col { border-left: 1px solid rgba(40,30,20,.18); padding-left: 1.7em; margin-left: -1.7em; width: 17em; }
+  .col p { text-indent: .9em; }
+  .col sup, .v { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: .5em; vertical-align: .75em; line-height: 0; margin-right: .18em; letter-spacing: -.02em; }
+  .sc { font-variant: small-caps; letter-spacing: .02em; }
+  .titulo-secao { font-family: 'Open Sans', sans-serif; font-weight: 800; font-size: .74em; line-height: 1.25; margin: .9em 0 .35em; text-indent: 0 !important; }
+  .sobrescrito { font-style: italic; text-indent: 0 !important; color: var(--tinta-suave); }
+  .cap { float: left; font-family: 'Open Sans', sans-serif; font-weight: 800; font-size: 2.6em; line-height: .82; margin: .04em .12em -.05em 0; }
+  /* verso da folha aparecendo por transparência (papel bíblia) */
+  .transparencia { position: absolute; inset: 0; z-index: 1; transform: scaleX(-1) translateY(.65em); opacity: .045; filter: blur(1px); pointer-events: none; }
+  .transparencia .colunas { padding: 2.4em 1.9em 0 2.6em; }
+  /* marca-texto: riscos desenhados por cima do texto, com borda irregular */
+  .marcas { position: absolute; inset: 0; z-index: 3; pointer-events: none; mix-blend-mode: multiply; filter: url(#aspero); }
+  .risco { position: absolute; background: var(--mt); border-radius: .18em .32em .26em .2em; }
+  .risco::after { content: ""; position: absolute; right: -.05em; top: 8%; bottom: 8%; width: .38em; border-radius: 50%; background: var(--mt-borda); filter: blur(1.5px); }
+
+  /* acabamento da foto */
+  #luz { position: absolute; inset: 0; pointer-events: none;
+         background: radial-gradient(130% 80% at 30% 20%, rgba(255,245,225,.18), rgba(0,0,0,0) 55%),
+                     radial-gradient(150% 110% at 50% 45%, rgba(0,0,0,0) 55%, rgba(20,12,5,.38) 100%),
+                     linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(25,15,8,.42) 100%); }
+  #grao { position: absolute; inset: 0; pointer-events: none; opacity: .32; mix-blend-mode: overlay;
+          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='5' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  body.tom-quente #foto { filter: sepia(.18) saturate(.92) contrast(1.02); }
+  body.tom-pb #foto     { filter: grayscale(1) contrast(1.08) brightness(.97); }
+  body.tom-sepia #foto  { filter: sepia(.55) saturate(.8) contrast(1.04) brightness(.95); }
+  #foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  body.cru #luz, body.cru #grao, body.cru .sobre, body.cru #seta { visibility: hidden; }
+
+  /* legenda opcional e referência */
+  .sobre { position: absolute; color: #fff; text-shadow: 0 1px 14px rgba(0,0,0,.45), 0 0 2px rgba(0,0,0,.25); }
+  #legenda { font-family: 'EB Garamond', serif; font-size: 46px; line-height: 1.22; }
+  #legenda.mao { font-family: 'Caveat', cursive; font-size: 60px; line-height: 1.1; }
+  #ref { font-family: 'EB Garamond', serif; font-size: 38px; letter-spacing: .03em; }
+  #seta { position: absolute; overflow: visible; filter: drop-shadow(0 1px 6px rgba(0,0,0,.35)); }
+
+  /* áreas livres (iguais ao modelo de livros) */
+  .safe { position: absolute; top: 250px; bottom: 250px; left: 150px; right: 150px; pointer-events: none; }
+  body.tiktok .safe { top: 150px; bottom: 450px; }
+  body.pinterest .safe { top: 100px; bottom: 100px; left: 110px; right: 110px; }
+  body.pinterest-vertical .safe { top: 270px; bottom: 440px; left: 195px; right: 195px; }
+</style>
+</head>
+<body class="tom-quente">
+<svg width="0" height="0" style="position:absolute">
+  <filter id="aspero" x="-5%" y="-20%" width="110%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency=".035 .09" numOctaves="2" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+<div id="palco">
+  <div class="camada" id="cena">
+    <div class="superficie"></div>
+    <div class="mundo">
+      <div class="livro">
+        <div class="capa"></div>
+        <div class="folhas"></div>
+        <div class="pagina">
+          <div class="cabeco"><span class="rh"></span><span class="pg"></span></div>
+          <div class="transparencia"></div>
+          <div class="colunas"><div class="col c1"></div><div class="col c2"></div></div>
+          <div class="marcas"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="camada" id="foto"></div>
+  <div id="luz"></div>
+  <div id="grao"></div>
+</div>
+<div class="safe"></div>
+<div class="sobre" id="legenda"></div>
+<div class="sobre" id="ref"></div>
+<svg id="seta" width="0" height="0"></svg>
+
+<script>
+// Gerador pseudoaleatório fixo (o mesmo pedido gera sempre a mesma imagem)
+function rnd(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+const senhor = h => h.replace(/\bSENHOR\b/g, '<span class="sc">Senhor</span>').replace(/\bDEUS\b/g, '<span class="sc">Deus</span>');
+
+window.montar = async (cfg, MAX, MIN, PISO) => {
+  const B = document.body;
+  B.className = ['cru', 'tom-' + (cfg.tom || 'quente'), cfg.plataforma || 'instagram', cfg.cor || 'amarelo', cfg.superficie || 'linho'].join(' ');
+  const W = innerWidth, H = innerHeight;
+  const livro = document.querySelector('.livro'), pag = document.querySelector('.pagina');
+  const c1 = document.querySelector('.c1'), c2 = document.querySelector('.c2');
+  document.querySelector('.rh').textContent = (cfg.cabecalho || '').toUpperCase();
+  document.querySelector('.pg').textContent = cfg.pagina || '';
+
+  // coluna da esquerda: texto anterior (fica desfocado); coluna da direita: contexto + trecho + continuação
+  c1.innerHTML = senhor(cfg.outraColuna || cfg.antes || '');
+  c2.innerHTML = senhor((cfg.antes2 || '') + (cfg.titulo ? `<p class="titulo-secao">${cfg.titulo}</p>` : '') +
+                 cfg.texto.replace(/<p>/, '<p data-foco>') + (cfg.depois || ''));
+  // garante páginas cheias (o excesso é cortado pela página)
+  for (const c of [c1, c2]) for (let i = 0; i < 4 && c.scrollHeight < pag.clientHeight * 1.1; i++) c.insertAdjacentHTML('beforeend', senhor(cfg.depois || cfg.antes || ''));
+  document.querySelector('.transparencia').innerHTML = `<div class="colunas"><div class="col">${c2.innerHTML}</div><div class="col">${c1.innerHTML}</div></div>`;
+
+  // pilha de folhas (espessura do miolo)
+  const fl = document.querySelector('.folhas'); fl.innerHTML = '';
+  for (let i = 1; i <= 22; i++) { const d = document.createElement('div'); d.className = 'folha'; d.style.transform = `translateZ(${-i * 0.05}em)`; d.style.filter = `brightness(${1 - i * .006})`; fl.appendChild(d); }
+
+  const safe = document.querySelector('.safe').getBoundingClientRect();
+  const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .5), y: safe.top + safe.height * (cfg.focoY ?? .5) };
+  const rz = cfg.giro ?? -11, rx = cfg.inclinacao ?? 24, ry = cfg.lado ?? -4;
+  const mts = () => [...document.querySelectorAll('.c2 .mt')];
+  await document.fonts.ready;
+
+  const posicionar = (f) => {
+    livro.style.fontSize = f + 'px';
+    livro.style.transform = 'none'; livro.style.left = '0px'; livro.style.top = '0px';
+    const P = pag.getBoundingClientRect();
+    const rs = mts().flatMap(m => [...m.getClientRects()]);
+    const x0 = Math.min(...rs.map(r => r.left)), x1 = Math.max(...rs.map(r => r.right));
+    const y0 = Math.min(...rs.map(r => r.top)), y1 = Math.max(...rs.map(r => r.bottom));
+    const o = { x: (x0 + x1) / 2 - P.left, y: (y0 + y1) / 2 - P.top };
+    livro.style.transformOrigin = `${o.x}px ${o.y}px`;
+    livro.style.left = (alvo.x - o.x) + 'px'; livro.style.top = (alvo.y - o.y) + 'px';
+    document.querySelector('.mundo').style.perspectiveOrigin = `${alvo.x}px ${alvo.y}px`;
+    livro.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)`;
+    const bx = mts().map(m => m.getBoundingClientRect());
+    const b = { l: Math.min(...bx.map(r => r.left)), r: Math.max(...bx.map(r => r.right)), t: Math.min(...bx.map(r => r.top)), b: Math.max(...bx.map(r => r.bottom)) };
+    return { rs: rs.map(r => ({ l: r.left - P.left, t: r.top - P.top, w: r.width, h: r.height })), b,
+             cabe: b.l >= safe.left - 2 && b.r <= safe.right + 2 && b.t >= safe.top - 2 && b.b <= safe.bottom + 2 };
+  };
+  let f = MAX, m = posicionar(f);
+  while (!m.cabe && f > PISO) { f--; m = posicionar(f); }
+
+  // riscos do marca-texto (linha a linha, levemente tortos)
+  const R = rnd([...cfg.texto].reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
+  const mk = document.querySelector('.marcas'); mk.innerHTML = '';
+  // junta retângulos da mesma linha
+  const linhas = [];
+  for (const r of m.rs) { const l = linhas.find(x => Math.abs(x.t - r.t) < r.h * .5); if (l) { l.r = Math.max(l.r, r.l + r.w); l.l = Math.min(l.l, r.l); } else linhas.push({ l: r.l, r: r.l + r.w, t: r.t, h: r.h }); }
+  for (const l of linhas) {
+    const d = document.createElement('div'); d.className = 'risco';
+    const ex = f * (.08 + R() * .12), al = l.h * .80;
+    d.style.cssText = `left:${l.l - f * .1}px;top:${l.t + (l.h - al) * .62}px;width:${l.r - l.l + f * .1 + ex}px;height:${al}px;transform:rotate(${(R() - .5) * .7}deg)`;
+    mk.appendChild(d);
+  }
+
+  document.getElementById('cena').style.display = '';
+  document.getElementById('foto').innerHTML = '';
+  window.__foco = { y: (m.b.t + m.b.b) / 2, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1 };
+
+  // legenda + referência (opcionais), na área livre acima ou abaixo do grifo
+  const lg = document.getElementById('legenda'), rf = document.getElementById('ref'), st = document.getElementById('seta');
+  lg.innerHTML = cfg.legenda || ''; lg.className = 'sobre' + (cfg.letraLegenda === 'mao' ? ' mao' : '');
+  rf.textContent = cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '';
+  const embaixo = true;
+  if (cfg.legenda) {
+    lg.style.left = (safe.left + 10) + 'px'; lg.style.maxWidth = (safe.width * .72) + 'px';
+    if (embaixo) { lg.style.top = ''; lg.style.bottom = (H - safe.bottom + 64) + 'px'; } else { lg.style.bottom = ''; lg.style.top = safe.top + 'px'; }
+  }
+  rf.style.left = (safe.left + 10) + 'px';
+  if (embaixo) { rf.style.top = ''; rf.style.bottom = (H - safe.bottom) + 'px'; } else { rf.style.bottom = ''; rf.style.top = (safe.top + (cfg.legenda ? lg.offsetHeight + 18 : 0)) + 'px'; }
+  st.setAttribute('width', 0); st.innerHTML = '';
+  if (cfg.legenda && cfg.seta !== false) {
+    const L = lg.getBoundingClientRect();
+    const a = embaixo ? { x: L.left + L.width * .55 + 40, y: L.top - 26 } : { x: L.left + L.width * .55 + 40, y: L.bottom + 26 };
+    const z = embaixo ? { x: (m.b.l + m.b.r) / 2 + 40, y: m.b.b + 22 } : { x: (m.b.l + m.b.r) / 2 + 40, y: m.b.t - 22 };
+    const c = { x: a.x + 160, y: (a.y + z.y) / 2 };
+    const ang = Math.atan2(z.y - c.y, z.x - c.x), k = 26;
+    const p1 = { x: z.x - k * Math.cos(ang - .5), y: z.y - k * Math.sin(ang - .5) }, p2 = { x: z.x - k * Math.cos(ang + .5), y: z.y - k * Math.sin(ang + .5) };
+    st.setAttribute('width', W); st.setAttribute('height', H); st.style.left = '0'; st.style.top = '0';
+    st.innerHTML = `<path d="M${a.x} ${a.y} Q ${c.x} ${c.y} ${z.x} ${z.y} M${p1.x} ${p1.y} L${z.x} ${z.y} L${p2.x} ${p2.y}" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  return { fonte: f, cabe: m.cabe };
+};
+
+// 2a etapa: a cena nítida vira foto e ganha profundidade de campo (longe = muito desfocado, meio, foco nítido)
+window.finalizar = async (src) => {
+  const { y, meia, f, desf } = window.__foco;
+  const foto = document.getElementById('foto'); foto.innerHTML = '';
+  const camadas = [[9 * desf, null], [3.4 * desf, [150, 260]], [0, [36 + f * .6, 170]]];
+  for (const [blur, mk] of camadas) {
+    const im = new Image(); im.src = src; await im.decode();
+    if (blur) im.style.filter = `blur(${blur}px)`;
+    if (blur) im.style.transform = 'scale(1.02)';   // evita borda clara do desfoque
+    if (mk) { const [n, s] = mk; im.style.webkitMaskImage = im.style.maskImage =
+      `linear-gradient(180deg, transparent ${y - meia - n - s}px, #000 ${y - meia - n}px, #000 ${y + meia + n}px, transparent ${y + meia + n + s}px)`; }
+    foto.appendChild(im);
+  }
+  document.getElementById('cena').style.display = 'none';
+  document.body.classList.remove('cru');
+};
+</script>
+</body>
+</html>
