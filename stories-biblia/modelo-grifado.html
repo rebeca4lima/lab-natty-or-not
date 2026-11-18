@@ -4,16 +4,15 @@
 <meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Open+Sans:wght@600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  /* ===== Modelo 1 · "Grifado": página da Bíblia em close, com o trecho marcado =====
-     Identidade: luz baixa, tons vinho / cereja / castanho / couro, fita marcadora de cetim vinho,
-     capa de couro e corte das folhas avermelhado. */
+  /* ===== Modelo "Grifado": página da Bíblia em close, com o trecho marcado =====
+     Cara de foto espontânea: luz baixa, tons vinho / cereja / castanho / couro, foco raso,
+     capa de couro e corte das folhas avermelhado. Nenhum texto por cima da foto. */
   :root {
     --W: 1080px; --H: 1920px;
     --papel: #F2EADC; --tinta: #251D19; --tinta-suave: #5E504A;
     /* marca-texto (padrão: vinho) */
     --mt: rgba(140,20,45,.44); --mt-borda: rgba(110,10,35,.5);
     /* marca */
-    --fita: #6B1624; --fita-luz: #A8394A; --fita-sombra: #3E0A13;
     --capa: #4A1A16; --corte: #8E2A26;
   }
   body.cereja    { --mt: rgba(210,36,70,.40);  --mt-borda: rgba(180,20,55,.45); }
@@ -82,13 +81,6 @@
   .risco { position: absolute; background: var(--mt); border-radius: .18em .32em .26em .2em; }
   .risco::after { content: ""; position: absolute; right: -.05em; top: 8%; bottom: 8%; width: .38em; border-radius: 50%; background: var(--mt-borda); filter: blur(1.5px); }
 
-  /* fita marcadora de cetim (assinatura visual) */
-  .fita-sombra { position: absolute; z-index: 5; top: -1em; width: 1.1em; transform-origin: top center; filter: drop-shadow(.12em .22em .22em rgba(40,8,8,.45)); }
-  .fita { width: 100%; height: 100%;
-          background:
-            repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,.05) 1px 3px),
-            linear-gradient(90deg, var(--fita-sombra) 0%, var(--fita) 22%, var(--fita-luz) 46%, var(--fita) 62%, var(--fita-sombra) 100%);
-          clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - .75em), 0 100%); }
 
   /* ---------- acabamento da foto ---------- */
   #foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -102,12 +94,8 @@
   body.tom-pb #tinta, body.tom-quente #tinta { display: none; }
   #grao { position: absolute; inset: 0; pointer-events: none; opacity: .3; mix-blend-mode: overlay;
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='5' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-  body.cru #luz, body.cru #tinta, body.cru #grao, body.cru .sobre { visibility: hidden; }
+  body.cru #luz, body.cru #tinta, body.cru #grao { visibility: hidden; }
 
-  /* textos opcionais sobre a foto */
-  .sobre { position: absolute; color: #F3E6DA; text-shadow: 0 1px 12px rgba(20,0,0,.55); }
-  #ref { font-family: 'EB Garamond', serif; font-size: 36px; letter-spacing: .03em; }
-  #assinatura { font-family: 'EB Garamond', serif; font-style: italic; font-size: 30px; letter-spacing: .04em; opacity: .8; }
 
   /* áreas livres (iguais ao modelo de livros) */
   .safe { position: absolute; top: 250px; bottom: 250px; left: 150px; right: 150px; pointer-events: none; }
@@ -135,7 +123,6 @@
           <div class="transparencia"></div>
           <div class="colunas"><div class="col c1"></div><div class="col c2"></div></div>
           <div class="marcas"></div>
-          <div class="fita-sombra"><div class="fita"></div></div>
         </div>
       </div>
     </div>
@@ -146,8 +133,6 @@
   <div id="grao"></div>
 </div>
 <div class="safe"></div>
-<div class="sobre" id="ref"></div>
-<div class="sobre" id="assinatura"></div>
 
 <script>
 // Gerador pseudoaleatório fixo (o mesmo pedido gera sempre a mesma imagem)
@@ -173,18 +158,20 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const fl = document.querySelector('.folhas'); fl.innerHTML = '';
   for (let i = 1; i <= 24; i++) { const d = document.createElement('div'); d.className = 'folha'; d.style.transform = `translateZ(${-i * 0.055}em)`; d.style.filter = `brightness(${1 - i * .012})`; fl.appendChild(d); }
 
-  // fita marcadora no vão entre as colunas (nunca cobre o trecho, que fica na coluna da direita)
-  const fs = document.querySelector('.fita-sombra');
-  fs.style.display = cfg.fita === false ? 'none' : '';
-  fs.style.left = (2.6 + 15.3 + .85 - .55) + 'em';
-  fs.style.height = (cfg.fitaAltura ?? 46) + 'em';
-  fs.style.transform = `rotate(${cfg.fitaGiro ?? 1.1}deg)`;
 
   const safe = document.querySelector('.safe').getBoundingClientRect();
-  const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .5), y: safe.top + safe.height * (cfg.focoY ?? .5) };
-  const rz = cfg.giro ?? -11, rx = cfg.inclinacao ?? 24, ry = cfg.lado ?? -4;
+  const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .46), y: safe.top + safe.height * (cfg.focoY ?? .5) };
+  const rz = cfg.giro ?? -16, rx = cfg.inclinacao ?? 24, ry = cfg.lado ?? -9;
   const mts = () => [...document.querySelectorAll('.c2 .mt')];
   await document.fonts.ready;
+
+  const cabeNaPagina = () => {
+    livro.style.transform = 'none';
+    const P = pag.getBoundingClientRect(), ult = mts().at(-1).getBoundingClientRect();
+    return ult.bottom <= P.bottom - 4 * parseFloat(livro.style.fontSize || 40);
+  };
+  livro.style.fontSize = MAX + 'px';
+  while (!cabeNaPagina() && c2.firstElementChild && !c2.firstElementChild.querySelector('.mt') && !c2.firstElementChild.classList.contains('mt')) c2.firstElementChild.remove();
 
   const posicionar = (f) => {
     livro.style.fontSize = f + 'px';
@@ -223,14 +210,8 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const fy = (m.b.t + m.b.b) / 2, fx = (m.b.l + m.b.r) / 2;
   B.style.setProperty('--fx', fx + 'px'); B.style.setProperty('--fy', fy + 'px');
   B.style.setProperty('--escuro', cfg.escuro ?? .55);
-  window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H };
+  window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b };
 
-  // referência e assinatura: opcionais (padrão: só o trecho)
-  const rf = document.getElementById('ref'), as = document.getElementById('assinatura');
-  rf.textContent = cfg.mostrarReferencia && cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '';
-  rf.style.left = (safe.left + 6) + 'px'; rf.style.bottom = (H - safe.bottom) + 'px';
-  as.textContent = cfg.assinatura || '';
-  as.style.right = (W - safe.right + 6) + 'px'; as.style.bottom = (H - safe.bottom + 4) + 'px';
   return { fonte: f, cabe: m.cabe };
 };
 
@@ -279,6 +260,33 @@ window.finalizar = async (src) => {
   foto.appendChild(out);
   document.getElementById('cena').style.display = 'none';
   document.body.classList.remove('cru');
+};
+
+// mapa das zonas (só para referência): áreas reservadas por rede + onde o trecho grifado precisa caber
+window.mapa = (MIN) => {
+  const add = (css, html, cls = '') => { const d = document.createElement('div'); d.className = 'm ' + cls; d.style.cssText = css; d.innerHTML = html || ''; document.body.appendChild(d); };
+  const st = document.createElement('style');
+  st.textContent = `.m{position:absolute;font-family:'Open Sans';font-weight:700;box-sizing:border-box;z-index:20}
+    .z{background:rgba(230,80,80,.22);border:3px dashed rgba(255,120,120,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:28px;line-height:1.35;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+    .lat{background:rgba(70,130,220,.16);border-left:3px dashed rgba(120,170,255,.85);border-right:3px dashed rgba(120,170,255,.85)}
+    .box{border:3px dashed}
+    .tag{color:#fff;font-size:22px;padding:4px 12px;border-radius:6px;white-space:nowrap}
+    .cota{color:#BFD6FF;font-size:22px;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.7)}`;
+  document.head.appendChild(st);
+  const safe = document.querySelector('.safe').getBoundingClientRect(), lat = Math.round(safe.left), H = innerHeight;
+  const tt = document.body.classList.contains('tiktok'), pv = document.body.classList.contains('pinterest-vertical'), pin = document.body.classList.contains('pinterest');
+  const T = Math.round(safe.top), Bs = Math.round(H - safe.bottom);
+  const sub = t => `<br><span style="font-weight:400;font-size:24px">${t}</span>`;
+  add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(tt ? 'abas Seguindo / Para você · busca' : pv ? 'fechar · perfil · botões do topo' : pin ? 'botões Salvar e menu' : 'nome do perfil · barra de progresso'), 'z');
+  add(`left:0;right:0;bottom:0;height:${Bs}px`, `BASE RESERVADA · ${Bs} px` + sub(tt ? 'nome · legenda · música · barra de navegação' : pv ? 'título · descrição · Salvar · comentários' : pin ? 'ícone de busca visual' : 'caixa de resposta · curtir · enviar'), 'z');
+  add(`left:0;width:${lat}px;top:${T}px;bottom:${Bs}px`, '', 'lat');
+  add(`right:0;width:${lat}px;top:${T}px;bottom:${Bs}px`, '', 'lat');
+  if (tt || pv) add(`right:12px;width:${lat - 24}px;top:${T + 560}px;height:${H - Bs - T - 560}px;background:rgba(230,80,80,.22);border:3px dashed rgba(255,120,120,.85);border-radius:12px;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, pv ? 'botões<br>reagir<br>comentar<br>compartilhar' : 'botões<br>curtir<br>comentar<br>salvar<br>compartilhar');
+  add(`left:20px;top:${tt ? 900 : pv ? 1000 : 1080}px;transform:rotate(-90deg);transform-origin:left top`, `margem lateral · ${lat} px`, 'cota');
+  const b = window.__foco.caixa;
+  add(`left:${b.l - 10}px;top:${b.t - 10}px;width:${b.r - b.l + 20}px;height:${b.b - b.t + 20}px;border-color:rgb(80,200,120)`, '', 'box');
+  add(`left:${b.l - 10}px;top:${b.t - 52}px;background:rgb(50,160,90)`, `TRECHO GRIFADO · nítido · letra ${MIN}–50 px`, 'tag');
+  add(`left:${b.l - 10}px;top:${b.b + 22}px;background:rgba(120,40,50,.95)`, 'daqui para fora, o desfoque aumenta aos poucos', 'tag');
 };
 </script>
 </body>

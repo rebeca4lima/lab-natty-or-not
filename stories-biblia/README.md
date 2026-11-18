@@ -1,49 +1,57 @@
 # Stories de trechos da Bíblia
 
-Modelo para transformar trechos da Bíblia (prints, fotos ou texto) em stories do **Instagram**, do **TikTok** e em pins do **Pinterest vertical**.
+Modelo para transformar trechos da Bíblia em stories do **Instagram**, do **TikTok** e em pins do **Pinterest vertical**, com cara de foto espontânea: a Bíblia aberta em close, com o trecho grifado, foco raso e luz baixa em tons de vinho.
 
-Usa o **mesmo motor e os mesmos parâmetros** do modelo de trechos de livros (`stories-livros`, branch `claude/eager-feynman-8h30h5`). Só a arte muda.
+- **Regras, mapa e opções:** veja [GUIA.md](GUIA.md)
+- **Exemplos:** pasta [`referencia/`](referencia/)
 
-> **Arte: em definição.** O `modelo.html` atual é um rascunho (v0) que reaproveita o visual do modelo de livros, trocando o bloco "capa + título + autor" por "referência + versão". Ele vai ser substituído pela arte escolhida a partir das referências.
+![Exemplo Instagram](referencia/exemplo-instagram.png)
 
-## O que foi copiado do modelo de livros
+Usa as **mesmas regras do modelo de trechos de livros** (`stories-livros`): mesmas áreas livres por rede, letra automática de 50 até o mínimo da rede e as mesmas regras de divisão. Só a arte é diferente.
 
-| Parâmetro | Instagram | TikTok | Pinterest vertical |
-|---|---|---|---|
-| Tamanho | 1080 × 1920 | 1080 × 1920 | 1080 × 1920 |
-| Topo livre | 250 px | 150 px | 270 px |
-| Base livre | 250 px | 450 px | 440 px |
-| Laterais livres | 150 px | 150 px | 195 px |
-| Letra do trecho | automática, de 50 até 24 px | de 50 até 20 px | de 50 até 20 px |
-| Se não couber | divide em **2 stories** | sempre **1 imagem** (avisa abaixo de 20) | sempre **1 pin** (avisa abaixo de 20) |
+## Estrutura
 
-Também continuam iguais: marca-texto e traço lateral nas cores `rosa` (padrão), `azul`, `verde`, `lilas`, `amarelo`; `traco: "preto"`; negrito; `lateral`; `minFonte`; e `mapa: true` para desenhar as zonas. O Pinterest feed (1000 × 1500) segue disponível com `plataforma: "pinterest"`.
-
-## O que mudou
-
-| Livros | Bíblia |
+| Arquivo / pasta | Para que serve |
 |---|---|
-| `capa`, `titulo`, `autor` | `referencia` (ex.: "João 3:16") e `versao` (ex.: "NVI", "ARA", "NAA") |
-| | Número do versículo com `<sup>16</sup>` dentro do texto |
+| `modelo-grifado.html` | A arte: página da Bíblia, grifo, foco, cores e luz |
+| `gerar.js` | Gera o PNG a partir de um pedido em JSON |
+| `pedidos/` | Pedidos em JSON (um por imagem) |
+| `referencia/` | Mapa das zonas, exemplos e rascunhos da criação |
+| `saida/` | Imagens geradas (não vão para o Git) |
+| `modelo-fundo.html` | Rascunho de outro estilo (Bíblia de fundo + frase por cima), para depois |
 
 ## Como gerar
 
-Precisa de Node.js com Playwright e acesso à internet (para a fonte do Google Fonts).
+Precisa de Node.js com Playwright e acesso à internet (para as fontes do Google Fonts).
 
 ```bash
-node gerar.js pedidos/teste-v0-1-instagram.json
+node gerar.js pedidos/exemplo-salmos-23-4-1-instagram.json
 ```
 
 Exemplo de pedido:
 
 ```json
 {
-  "texto": "<p><sup>16</sup>Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, <span class=\"mt\">para que todo aquele que nele crê não pereça, mas tenha a vida eterna.</span></p>",
-  "referencia": "João 3:16",
+  "texto": "<p><sup>4</sup><span class=\"mt\">Ainda que eu ande pelo vale da sombra da morte, não temerei mal nenhum, porque tu estás comigo;</span> o teu bordão e o teu cajado me consolam.</p>",
+  "antes": "<p>…versículos anteriores…</p>",
+  "depois": "<p>…versículos seguintes…</p>",
+  "outraColuna": "<p>…texto da coluna ao lado…</p>",
+  "cabecalho": "Salmos 22, 23",
+  "pagina": "612",
+  "referencia": "Salmos 23:4",
   "versao": "ARA",
   "plataforma": "instagram",
-  "saida": "saida/2026-11-18-joao-3-16-1-instagram.png"
+  "saida": "saida/2026-11-18-salmos-23-4-1-instagram.png"
 }
 ```
+
+- `texto`: o trecho. Parágrafos em `<p>`, número do versículo em `<sup>`, grifo em `<span class="mt">` (pode haver mais de um). "SENHOR" e "DEUS" em maiúsculas viram versalete, como nas Bíblias.
+- `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real.
+- `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
+- `referencia` e `versao`: só para registro; não aparecem na imagem.
+
+Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest-vertical`), `cor` do grifo (`vinho` padrão, `cereja`, `castanho`, `vermelho`), `superficie` (`veludo` padrão, `couro`, `madeira`), `tom` (`vinho` padrão, `quente`, `pb`), `minFonte` e `mapa` (`true` desenha o mapa de zonas). Ajustes finos: `giro`, `inclinacao`, `lado`, `focoX`, `focoY`, `desfoque`, `escuro`.
+
+O script informa o tamanho de letra usado e se o grifo coube (`{ fonte: 49, cabe: true }`). No Instagram, se `cabe` for `false`, divida o trecho em dois pedidos. No TikTok e no Pinterest a imagem é sempre única: o script avisa (`aviso`) quando a letra fica abaixo de 20 ou o trecho não cabe, e aí o ideal é encurtar.
 
 Os pedidos seguem o mesmo padrão de nome do modelo de livros: `AAAA-MM-DD-<trecho>-1-instagram.json`, `-2-pinterest-vertical.json` e `-3-tiktok.json`.
