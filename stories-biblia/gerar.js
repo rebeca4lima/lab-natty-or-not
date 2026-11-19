@@ -102,8 +102,13 @@ const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
     const [t1, t2] = dividirTexto(cfg.texto);
     const jeito = cfg.jeitoDividido || cfg.jeito || 'tudo';
     const base = { ...cfg, dividir: false, jeito };
-    await gerarUm({ ...base, texto: t1, depois: t2 + (cfg.depois || ''), saida: parte(cfg.saida, 1) });
-    await gerarUm({ ...base, texto: t2, antes: (cfg.antes || '') + t1, saida: parte(cfg.saida, 2) });
+    // cada story mostra na caixinha só os versículos dele (ex.: "Salmos 139:7-10" e "Salmos 139:11-14")
+    const refParte = (t) => {
+      const m = (cfg.referencia || '').match(/^(.*\d+):\d+(?:-\d+)?$/), vs = [...t.matchAll(/<sup>(\d+)<\/sup>/g)].map(x => +x[1]);
+      return m && vs.length ? `${m[1]}:${vs[0]}${vs.length > 1 ? '-' + vs.at(-1) : ''}` : cfg.referencia;
+    };
+    await gerarUm({ ...base, texto: t1, referencia: refParte(t1), depois: t2 + (cfg.depois || ''), saida: parte(cfg.saida, 1) });
+    await gerarUm({ ...base, texto: t2, referencia: refParte(t2), antes: (cfg.antes || '') + t1, saida: parte(cfg.saida, 2) });
   };
 
   const instagram = (cfg.plataforma || 'instagram') === 'instagram';

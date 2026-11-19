@@ -187,6 +187,7 @@ function prepararTexto(cfg) {
 
 window.montar = async (cfg, MAX, MIN, PISO) => {
   cfg.texto = prepararTexto(cfg);
+  await document.fonts.load("32px 'EB Garamond'");   // a caixinha é medida com a fonte certa
   const B = document.body;
   const citacao = cfg.citacao || 'nenhuma';
   const ref = (cfg.referencia || '').match(/^(.*\S)\s+(\d+)(?::(\S+))?$/) || [];
@@ -211,8 +212,12 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
 
   const safe0 = document.querySelector('.safe').getBoundingClientRect();
   // etiqueta por cima da foto: "caixinha" ou "mao"; lugar "veludo" (ao lado da Bíblia, padrão) ou "trecho" (logo acima do trecho)
-  const etiqueta = cfg.etiqueta || ((citacao === 'caixinha' || citacao === 'mao') ? citacao : null);
-  const lugar = cfg.etiquetaLugar || (cfg.etiqueta ? 'veludo' : 'trecho');
+  // PADRÃO OFICIAL: caixinha com a referência sobre o veludo, ao lado da Bíblia, com seta fluida.
+  // "etiqueta": false tira a caixinha. (Formas antigas: "citacao": "caixinha"/"mao" = etiqueta por cima da página.)
+  const antiga = citacao === 'caixinha' || citacao === 'mao';
+  const etiqueta = cfg.etiqueta === false || cfg.etiqueta === 'nenhuma' ? null : (cfg.etiqueta || (antiga ? citacao : (cfg.referencia ? 'caixinha' : null)));
+  const lugar = cfg.etiquetaLugar || (antiga && !cfg.etiqueta ? 'trecho' : 'veludo');
+  const versao = cfg.versao ?? 'NVI';
   const reserva = etiqueta && lugar === 'trecho' ? (cfg.reservaCitacao ?? 190) : 0;
   const safe = { left: safe0.left, right: safe0.right, top: safe0.top + reserva, bottom: safe0.bottom, width: safe0.width, height: safe0.height - reserva };
   const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .46), y: safe.top + safe.height * (cfg.focoY ?? .5) };
@@ -263,6 +268,30 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   let f = MAX, m = posicionar(f);
   while (!m.cabe && f > PISO) { f--; m = posicionar(f); }
 
+  // a caixinha (letra 32) precisa caber no veludo, sem tocar a Bíblia nem o trecho e sem entrar no topo/base reservados.
+  // Se não couber (trecho curto = letra grande = página ocupando a tela), a letra do trecho diminui e o veludo aparece.
+  if (etiqueta && lugar === 'veludo' && cfg.referencia) {
+    const el = document.getElementById('cita');
+    el.className = 'caixinha'; el.innerHTML = cfg.referencia + (versao ? ' · ' + versao : '');
+    el.style.fontSize = (cfg.letraCaixinha ?? 32) + 'px'; el.style.left = '0px'; el.style.top = '0px';
+    const { width: cw, height: ch } = el.getBoundingClientRect();
+    el.className = ''; el.innerHTML = '';
+    const cabeCaixinha = () => {
+      const poly = [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; });
+      const linhas = mts().flatMap(e => [...e.getClientRects()]);
+      const dentro = (x, y) => { let c = false; for (let i = 0, j = 3; i < 4; j = i++) { const a = poly[i], b = poly[j]; if (((a.y > y) !== (b.y > y)) && (x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x)) c = !c; } return c; };
+      for (let y = safe0.top + 6; y <= safe0.bottom - ch; y += 12) for (let x = 24; x <= W - cw - 24; x += 12) {
+        if (linhas.some(C => !(x + cw < C.left - 20 || x > C.right + 20 || y + ch < C.top - 20 || y > C.bottom + 20))) continue;
+        let toca = false;
+        for (let px = x - 24; px <= x + cw + 24 && !toca; px += 12) for (let py = y - 24; py <= y + ch + 24; py += 12) if (dentro(px, py)) { toca = true; break; }
+        if (!toca) return true;
+      }
+      return false;
+    };
+    const piso = Math.max(PISO, cfg.minFonteComCaixinha ?? 30);
+    while (f > piso && !cabeCaixinha()) { f--; m = posicionar(f); }
+  }
+
   // riscos do marca-texto (linha a linha, levemente tortos)
   const R = rnd([...cfg.texto].reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
   const mk = document.querySelector('.marcas'); mk.innerHTML = '';
@@ -298,10 +327,10 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
+                    etiqueta, lugar, safe0, letraCaixinha: cfg.letraCaixinha ?? 32, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
                     etiquetaAcima: cfg.etiquetaAcima ?? (lugar === 'veludo' && !cfg.setaSaida ? 330 : undefined), linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
-                    textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
-                    textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
+                    textoCita: cfg.referencia ? cfg.referencia + (versao ? ' · ' + versao : '') : '',
+                    textoCitaDuas: cfg.referencia ? cfg.referencia + (versao ? `<br><small>${versao}</small>` : '') : '',
                     contorno: [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; }),
                     alvoCita: (() => { const els = [...document.querySelectorAll('.c2 .cabeco-cap .nome span, .c2 .cabeco-cap .num')]; let r;
                       if (els.length) { const rs = els.map(e => { const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect(); }).filter(q => q.width);
@@ -386,7 +415,8 @@ function desenharCitacao() {
     el.innerHTML = F.textoCita;
     // testa todos os tamanhos (40 a 28) e escolhe o melhor lugar; letra menor tem uma pequena penalidade
     // padrão: para no primeiro tamanho que cabe; com "etiquetaAcima", testa todos e aceita letra menor para descer
-    for (let fs = 40; fs >= 28 && (F.etiquetaAcima != null || !(melhor && melhor.pts < 3000)); fs -= 2) {
+    // letra da caixinha: no máximo 32 (tamanho aprovado), diminuindo até 28 se o veludo não tiver espaço
+    for (let fs = F.letraCaixinha; fs >= 28 && (F.etiquetaAcima != null || !(melhor && melhor.pts < 3000)); fs -= 2) {
       if (F.etiquetaAcima == null) melhor = null;
       el.style.fontSize = fs + 'px'; el.style.left = '0px'; el.style.top = '0px';
       const { width: w, height: h } = el.getBoundingClientRect();
@@ -395,7 +425,7 @@ function desenharCitacao() {
         if (sobreTrecho(r)) continue;
         let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2;
         if (F.etiquetaAcima != null) pts += Math.abs(((T.t + T.b) / 2 - (y + h / 2)) - F.etiquetaAcima) * 1.5;   // caixinha mais alta ou mais baixa
-        if (F.etiquetaAcima != null) pts += (40 - fs) * 22;   // prefere letra maior
+        if (F.etiquetaAcima != null) pts += (F.letraCaixinha - fs) * 22;   // prefere letra maior
         if (!melhor || pts < melhor.pts) melhor = { pts, x, y, fs };
       }
     }

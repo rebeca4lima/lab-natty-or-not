@@ -1,6 +1,6 @@
 # Stories de trechos da Bíblia
 
-Modelo para transformar trechos da Bíblia em stories do **Instagram**, do **TikTok** e em pins do **Pinterest vertical**, com cara de foto espontânea: a Bíblia aberta em close, com o trecho grifado, foco raso e luz baixa em tons de vinho.
+Modelo **oficial** para transformar trechos da Bíblia (NVI) em stories do **Instagram**, do **TikTok** e em pins do **Pinterest vertical**, com cara de foto espontânea: a Bíblia aberta em close, com o trecho grifado, foco raso e luz baixa em tons de vinho, e uma caixinha com a referência sobre o veludo, com seta apontando para o trecho.
 
 - **Regras, mapa e opções:** veja [GUIA.md](GUIA.md)
 - **Exemplos:** pasta [`referencia/`](referencia/)
@@ -16,7 +16,7 @@ Usa as **mesmas regras do modelo de trechos de livros** (`stories-livros`): mesm
 | `modelo-grifado.html` | A arte: página da Bíblia, grifo, foco, cores e luz |
 | `gerar.js` | Gera o PNG a partir de um pedido em JSON |
 | `pedidos/` | Pedidos em JSON (um por imagem); `pedidos/variacoes/` tem exemplos das cartas na manga |
-| `referencia/` | Mapa das zonas, exemplos e rascunhos da criação |
+| `referencia/` | Mapa das zonas e exemplos oficiais; `referencia/historico/` tem as etapas da criação |
 | `saida/` | Imagens geradas (não vão para o Git) |
 | `modelo-fundo.html` | Rascunho de outro estilo (Bíblia de fundo + frase por cima), para depois |
 
@@ -25,10 +25,10 @@ Usa as **mesmas regras do modelo de trechos de livros** (`stories-livros`): mesm
 Precisa de Node.js com Playwright e acesso à internet (para as fontes do Google Fonts).
 
 ```bash
-node gerar.js pedidos/exemplo-salmos-23-4-1-instagram.json
+node gerar.js pedidos/2026-11-18-salmos-139-7-14-1-instagram.json
 ```
 
-Exemplo de pedido (trecho longo, jeito B, que é o padrão):
+Exemplo de pedido (o post oficial: trecho longo, jeito B, caixinha no veludo):
 
 ```json
 {
@@ -51,14 +51,12 @@ Exemplo de pedido (trecho longo, jeito B, que é o padrão):
 - `jeito`: em branco, o script decide pelo tamanho do trecho: até 3 versículos e 300 letras é `grifo` (trecho nítido + grifo); a partir de 4 versículos ou 300 letras é `traco` (jeito B, com traço na margem). Carta na manga A: `"jeito": "tudo"`.
 - `dividir`: carta na manga C, `true` gera 2 stories no Instagram (`…-parte1.png` e `…-parte2.png`). No Instagram a divisão também acontece sozinha quando a letra precisaria ficar abaixo de 24 (desligue com `false`).
 - `traco`: `false` tira o traço na margem; `true` põe.
-- `citacao` (em teste): `cabecalho` (livro · versão e número do capítulo grande no alto da página), `caixinha` (etiqueta com seta) ou `mao` (letra à mão com seta). Usa `referencia` e `versao`.
-- `etiqueta` (em teste): `caixinha` ou `mao`, a referência por extenso com seta. Fica sobre o veludo, ao lado da Bíblia (`etiquetaLugar`: `veludo`, padrão, ou `trecho`). Combina com `"citacao": "cabecalho"`.
+- `referencia` e `versao`: aparecem na **caixinha** sobre o veludo, com seta fluida apontando para o trecho (padrão). `versao` é `NVI` se ficar em branco. `"etiqueta": false` tira a caixinha.
 - `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real. Preencha sempre o `depois`.
 - `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
-- `referencia` e `versao`: aparecem na imagem só quando há `citacao`.
 - Avançado: o `texto` também pode vir com `<span class="mt">` (grifo) e `<span class="foco">` (nítido, sem grifo) prontos; aí `grifo` e `jeito` são ignorados.
 
-Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest-vertical`), `cor` do grifo (`vinho` padrão, `cereja`, `castanho`, `vermelho`), `superficie` (`veludo` padrão, `couro`, `madeira`), `tom` (`vinho` padrão, `quente`, `pb`), `minFonte` e `mapa` (`true` desenha o mapa de zonas). Ajustes finos: `giro`, `inclinacao`, `lado`, `focoX`, `focoY`, `desfoque`, `escuro`.
+Campos opcionais: `plataforma` (`instagram` padrão, `tiktok`, `pinterest-vertical`), `cor` do grifo (`vinho` padrão, `cereja`, `castanho`, `vermelho`), `superficie` (`veludo` padrão, `couro`, `madeira`), `tom` (`vinho` padrão, `quente`, `pb`), `minFonte` e `mapa` (`true` desenha o mapa de zonas). Ajustes finos: `giro`, `inclinacao`, `lado`, `focoX`, `focoY`, `desfoque`, `escuro`; da caixinha e da seta: `letraCaixinha` (máx. 32), `etiquetaAcima`, `setaAltura`, `setaFolga`, `setaS`, `setaAbre`, `setaChega`, `setaSaida`. Formas testadas e guardadas (fora do padrão): `"citacao": "cabecalho"` (livro e capítulo em destaque na página) e `"etiqueta": "mao"` (referência em letra à mão).
 
 O script informa o tamanho de letra usado e se o trecho coube (`{ fonte: 37, cabe: true }`). No Instagram, se não couber com letra 24, ele mesmo divide em 2 stories. No TikTok e no Pinterest a imagem é sempre única: o script avisa (`aviso`) quando a letra fica abaixo de 20 ou o trecho não cabe, e aí o ideal é encurtar.
 
