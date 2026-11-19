@@ -298,7 +298,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0, setaS: cfg.setaS, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
+                    etiqueta, lugar, safe0, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
                     etiquetaAcima: cfg.etiquetaAcima ?? (lugar === 'veludo' && !cfg.setaSaida ? 330 : undefined), linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
@@ -429,12 +429,22 @@ function desenharCitacao() {
     // seta fluida, como feita com o dedo: sai do centro da base da caixinha, faz um "S" suave e chega ao trecho.
     // Traço de caneta: fino no começo, mais cheio no meio, afinando perto da ponta.
     const a0 = { x: (L.left + L.right) / 2, y: L.bottom + 14 };
-    const D = Math.hypot(z.x - a0.x, z.y - a0.y), sx = Math.sign(a0.x - z.x) || 1;   // sx: lado do veludo (para fora da Bíblia)
+    // aponta para o trecho como um todo: a ponta fica no veludo, ao lado do trecho (um pouco acima do meio),
+    // afastada da borda da Bíblia, e a seta chega na direção do centro do trecho
+    const LF = F.linhasFoco, bb = { l: Math.min(...LF.map(q => q.l)), r: Math.max(...LF.map(q => q.r)), t: Math.min(...LF.map(q => q.t)), b: Math.max(...LF.map(q => q.b)) };
+    const Cc = { x: (bb.l + bb.r) / 2, y: (bb.t + bb.b) / 2 };
+    const sx = Math.sign(a0.x - Cc.x) || 1;   // lado do veludo onde está a caixinha
+    const yt = bb.t + (bb.b - bb.t) * (F.setaAltura ?? .32), poly = F.contorno, xs = [];
+    for (let i = 0; i < 4; i++) { const p = poly[i], q = poly[(i + 1) % 4]; if (p.y !== q.y && (p.y - yt) * (q.y - yt) <= 0) xs.push(p.x + (yt - p.y) * (q.x - p.x) / (q.y - p.y)); }
+    const Ex = xs.length ? (sx > 0 ? Math.max(...xs) : Math.min(...xs)) : (sx > 0 ? bb.r : bb.l);
+    const ux = Ex - Cc.x, uy = yt - Cc.y, ul = Math.hypot(ux, uy) || 1, folga = F.setaFolga ?? 46;
+    z = { x: Math.min(W - 30, Math.max(30, Ex + ux / ul * folga)), y: yt + uy / ul * folga };
+    const D = Math.hypot(z.x - a0.x, z.y - a0.y);
     // curva pelos ângulos: sai descendo (um pouco para o lado do veludo) e chega ao trecho vindo do veludo -> "S" aberto
-    const rad = g => g * Math.PI / 180, h = D * (F.setaS ?? .42);
-    const t0 = sx > 0 ? rad(78) : rad(102), t1 = sx > 0 ? rad(162) : rad(18);
+    const rad = g => g * Math.PI / 180, h = D * (F.setaS ?? .5);
+    const ang0 = F.setaAbre ?? 48, t0 = sx > 0 ? rad(ang0) : rad(180 - ang0), t1 = Math.atan2(Cc.y - z.y, Cc.x - z.x);   // chega apontando para o centro do trecho
     const P1 = { x: a0.x + h * Math.cos(t0), y: a0.y + h * Math.sin(t0) };
-    const P2 = { x: z.x - h * Math.cos(t1), y: z.y - h * Math.sin(t1) };
+    const hb = D * (F.setaChega ?? .46), P2 = { x: Math.min(W - 40, Math.max(40, z.x - hb * Math.cos(t1))), y: z.y - hb * Math.sin(t1) };
     const B = t => { const u = 1 - t; return { x: u*u*u*a0.x + 3*u*u*t*P1.x + 3*u*t*t*P2.x + t*t*t*z.x, y: u*u*u*a0.y + 3*u*u*t*P1.y + 3*u*t*t*P2.y + t*t*t*z.y }; };
     const N = 90, pts = Array.from({ length: N + 1 }, (_, i) => B(i / N));
     const larg = t => 1.5 + 2.3 * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.15)), .6) + (t > .87 ? .7 : 0);

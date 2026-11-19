@@ -27,7 +27,11 @@
 //                nunca pelo topo nem pela base reservados) | "trecho" (logo acima do começo do trecho, por cima da página)
 //   setaSaida  : seta da etiqueta: "fluida" (padrão no veludo: sai do centro da caixinha e faz um "S" suave até o trecho,
 //                com traço de caneta afinando nas pontas) | "auto" (canto mais perto do trecho) | "esquerda" | "meio" | "direita"
-//   setaS      : quanto a seta fluida se curva (padrão .42)
+//                A seta fluida aponta para o trecho como um todo: a ponta fica no veludo, ao lado do trecho, fora da Bíblia,
+//                e chega na direção do centro do trecho.
+//   setaAltura : em que altura do trecho fica a ponta (0 = primeira linha, 1 = última; padrão .32)
+//   setaFolga  : distância da ponta até a borda da Bíblia, em px (padrão 46)
+//   setaS, setaAbre, setaChega: curvatura da seta fluida (padrão .5, 48°, .46)
 //                (com esquerda/meio/direita a seta desce da base da caixinha e faz a curva até o trecho, mais longa)
 //   etiquetaAcima: quantos px a caixinha fica acima da ponta da seta (padrão no veludo: 330; ex.: 80 = mais baixa);
 //                aceita letra menor para caber, mas prefere a maior
