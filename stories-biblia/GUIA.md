@@ -70,6 +70,12 @@ Exemplo do padrão nas 3 redes: [referencia/exemplo-salmos-139-7-14.png](referen
 | **2 · Caixinha com seta** (`"citacao": "caixinha"`) | Etiqueta creme "Salmos 139:7-14 · NVI" logo acima do trecho, com seta curta até o começo | Tudo, por extenso |
 | **3 · Letra à mão com seta** (`"citacao": "mao"`) | Igual à 2, em letra à mão creme, sem caixa | Tudo, mas fica pouco legível sobre o papel claro |
 
+### Cabeçalho + caixinha no veludo (em teste)
+
+![Caixinha no veludo](referencia/citacao-caixinha-no-veludo.png)
+
+O cabeçalho do capítulo na página e, **ao lado da Bíblia, sobre o veludo**, a etiqueta com a referência por extenso e uma seta curta até o cabeçalho (`"citacao": "cabecalho", "etiqueta": "caixinha"`). A etiqueta procura sozinha o lugar livre de veludo mais perto do cabeçalho; pode avançar pelas laterais (no TikTok pode ficar sob os botões), mas nunca pelo topo nem pela base reservados. Em letra à mão (`"etiqueta": "mao"`) ela fica legível, porque o veludo é escuro.
+
 ## Áreas livres (iguais ao modelo de livros)
 
 | Área | Instagram | TikTok | Pinterest vertical |

@@ -21,6 +21,10 @@
 //                "caixinha"  -> etiqueta creme com a referência e uma seta até o começo do trecho
 //                "mao"       -> referência em letra à mão com seta (fica pouco legível sobre o papel claro)
 //                sem citacao -> nada (só o que já aparece na página)
+//   etiqueta   : "caixinha" ou "mao" -> referência por extenso ("Salmos 139:7-14 · NVI") com seta, por cima da foto.
+//                Combina com "citacao": "cabecalho" (a seta aponta para o cabeçalho do capítulo).
+//   etiquetaLugar: "veludo" (padrão: ao lado da Bíblia, no lugar livre mais perto do cabeçalho; pode avançar pelas laterais,
+//                nunca pelo topo nem pela base reservados) | "trecho" (logo acima do começo do trecho, por cima da página)
 //   antes      : versículos que vêm antes do trecho, na mesma coluna (ficam desfocados)
 //   depois     : versículos que vêm depois do trecho
 //   outraColuna: texto da coluna da esquerda (desfocada)

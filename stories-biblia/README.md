@@ -52,6 +52,7 @@ Exemplo de pedido (trecho longo, jeito B, que é o padrão):
 - `dividir`: carta na manga C, `true` gera 2 stories no Instagram (`…-parte1.png` e `…-parte2.png`). No Instagram a divisão também acontece sozinha quando a letra precisaria ficar abaixo de 24 (desligue com `false`).
 - `traco`: `false` tira o traço na margem; `true` põe.
 - `citacao` (em teste): `cabecalho` (livro · versão e número do capítulo grande no alto da página), `caixinha` (etiqueta com seta) ou `mao` (letra à mão com seta). Usa `referencia` e `versao`.
+- `etiqueta` (em teste): `caixinha` ou `mao`, a referência por extenso com seta. Fica sobre o veludo, ao lado da Bíblia (`etiquetaLugar`: `veludo`, padrão, ou `trecho`). Combina com `"citacao": "cabecalho"`.
 - `antes`, `depois` e `outraColuna`: os versículos vizinhos que completam a página. Ficam desfocados, só para a página parecer real. Preencha sempre o `depois`.
 - `cabecalho` e `pagina`: o cabeçalho da página da Bíblia.
 - `referencia` e `versao`: aparecem na imagem só quando há `citacao`.

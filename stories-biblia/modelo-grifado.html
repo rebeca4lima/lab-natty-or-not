@@ -53,6 +53,7 @@
           background: linear-gradient(115deg, #5A231C, var(--capa) 45%, #2E0F0C);
           box-shadow: 0 1.4em 3em rgba(10,0,0,.6); }
   .capa::after { content: ""; position: absolute; inset: .28em; border-radius: .25em; border: 1px dashed rgba(200,150,120,.25); }
+  .canto { position: absolute; width: 1px; height: 1px; }
   .folha { position: absolute; inset: 0; background: var(--corte); border-right: 1px solid rgba(40,5,5,.35); border-bottom: 1px solid rgba(40,5,5,.35); }
 
   .pagina { position: relative; width: 36.8em; height: 80em; background: var(--papel); overflow: hidden;
@@ -106,7 +107,8 @@
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='5' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
   body.cru #luz, body.cru #tinta, body.cru #grao, body.cru #cita, body.cru #seta-cita { visibility: hidden; }
   /* citação 2 e 3: etiqueta por cima da foto, com seta desenhada à mão */
-  #cita { position: absolute; z-index: 10; white-space: nowrap; display: none; }
+  #cita { position: absolute; z-index: 10; white-space: nowrap; display: none; text-align: center; }
+  #cita small { font-size: .72em; letter-spacing: .22em; }
   #cita.caixinha { display: block; background: rgba(243,234,223,.95); color: #5E1621; font-family: 'EB Garamond', serif; font-size: 40px; letter-spacing: .02em;
                    padding: 8px 24px 12px; border-radius: 12px; box-shadow: 0 6px 22px rgba(30,5,5,.35); }
   #cita.mao { display: block; color: #F6EBDD; font-family: 'Caveat', cursive; font-weight: 600; font-size: 66px; line-height: 1;
@@ -133,7 +135,7 @@
     <div class="superficie"></div>
     <div class="mundo">
       <div class="livro">
-        <div class="capa"></div>
+        <div class="capa"><i class="canto" style="left:0;top:0"></i><i class="canto" style="right:0;top:0"></i><i class="canto" style="right:0;bottom:0"></i><i class="canto" style="left:0;bottom:0"></i></div>
         <div class="folhas"></div>
         <div class="pagina">
           <div class="cabeco"><span class="rh"></span><span class="pg"></span></div>
@@ -208,7 +210,10 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
 
 
   const safe0 = document.querySelector('.safe').getBoundingClientRect();
-  const reserva = (citacao === 'caixinha' || citacao === 'mao') ? (cfg.reservaCitacao ?? 190) : 0;
+  // etiqueta por cima da foto: "caixinha" ou "mao"; lugar "veludo" (ao lado da Bíblia, padrão) ou "trecho" (logo acima do trecho)
+  const etiqueta = cfg.etiqueta || ((citacao === 'caixinha' || citacao === 'mao') ? citacao : null);
+  const lugar = cfg.etiquetaLugar || (cfg.etiqueta ? 'veludo' : 'trecho');
+  const reserva = etiqueta && lugar === 'trecho' ? (cfg.reservaCitacao ?? 190) : 0;
   const safe = { left: safe0.left, right: safe0.right, top: safe0.top + reserva, bottom: safe0.bottom, width: safe0.width, height: safe0.height - reserva };
   const alvo = { x: safe.left + safe.width * (cfg.focoX ?? .46), y: safe.top + safe.height * (cfg.focoY ?? .5) };
   const rz = cfg.giro ?? -16, rx = cfg.inclinacao ?? 24, ry = cfg.lado ?? -9;
@@ -293,7 +298,14 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    citacao, textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '', safe0 };
+                    etiqueta, lugar, safe0,
+                    textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
+                    textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
+                    contorno: [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; }),
+                    alvoCita: (() => { const els = [...document.querySelectorAll('.c2 .cabeco-cap .nome span, .c2 .cabeco-cap .num')]; let r;
+                      if (els.length) { const rs = els.map(e => { const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect(); }).filter(q => q.width);
+                        r = { left: Math.min(...rs.map(q => q.left)), right: Math.max(...rs.map(q => q.right)), top: Math.min(...rs.map(q => q.top)), bottom: Math.max(...rs.map(q => q.bottom)) }; }
+                      r = r || { left: ri.left - 4, right: ri.left + 4, top: ri.top - 4, bottom: ri.top + 4 }; return { l: r.left, r: r.right, t: r.top, b: r.bottom }; })() };
 
   return { fonte: f, cabe: m.cabe };
 };
@@ -348,19 +360,57 @@ window.finalizar = async (src) => {
 
 function desenharCitacao() {
   const F = window.__foco, el = document.getElementById('cita'), sv = document.getElementById('seta-cita');
-  el.className = ''; sv.innerHTML = ''; sv.setAttribute('width', 0);
-  if (F.citacao !== 'caixinha' && F.citacao !== 'mao') return;
-  el.className = F.citacao; el.textContent = F.textoCita;
-  const w0 = el.getBoundingClientRect().width;
-  el.style.left = Math.max(F.safe0.left + 4, Math.min(F.safe0.right - w0, F.inicio.x - 40)) + 'px';
-  el.style.top = Math.max(F.safe0.top + 6, F.inicio.y - (F.citacao === 'mao' ? 175 : 165)) + 'px';
-  const L = el.getBoundingClientRect();
-  const a = { x: L.left + 30, y: L.bottom + 12 };
-  const z = { x: F.inicio.x - 12, y: F.inicio.y - 6 };
-  const c = { x: Math.min(a.x, z.x) - 60, y: (a.y + z.y) / 2 + 10 };
+  el.className = ''; el.innerHTML = ''; sv.innerHTML = ''; sv.setAttribute('width', 0);
+  if (!F.etiqueta) return;
+  el.className = F.etiqueta;
+  const W = innerWidth, H = innerHeight, S = F.safe0;
+  let L, z;
+  if (F.lugar === 'trecho') {
+    // logo acima do começo do trecho (por cima da página)
+    el.innerHTML = F.textoCita;
+    const w0 = el.getBoundingClientRect().width;
+    el.style.left = Math.max(S.left + 4, Math.min(S.right - w0, F.inicio.x - 40)) + 'px';
+    el.style.top = Math.max(S.top + 6, F.inicio.y - (F.etiqueta === 'mao' ? 175 : 165)) + 'px';
+    L = el.getBoundingClientRect(); z = { x: F.inicio.x - 12, y: F.inicio.y - 6 };
+  } else {
+    // ao lado da Bíblia, sobre o veludo: procura o lugar livre mais perto do cabeçalho (ou do começo do trecho).
+    // Pode avançar pelas laterais (no TikTok pode ficar sob os botões), mas nunca pelo topo ou pela base reservados.
+    const poly = F.contorno, T = F.alvoCita, cx0 = poly.reduce((a, p) => a + p.x, 0) / 4, cy0 = poly.reduce((a, p) => a + p.y, 0) / 4;
+    const dentro = (x, y) => { let c = false; for (let i = 0, j = 3; i < 4; j = i++) { const a = poly[i], b = poly[j]; if (((a.y > y) !== (b.y > y)) && (x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x)) c = !c; } return c; };
+    const M = 24, toca = r => { for (let x = r.l - M; x <= r.r + M; x += 12) for (let y = r.t - M; y <= r.b + M; y += 12) if (dentro(x, y)) return true; return false; };
+    const C = F.caixa, sobreTrecho = r => !(r.r < C.l - 20 || r.l > C.r + 20 || r.b < C.t - 20 || r.t > C.b + 20);
+    const gap = r => Math.hypot(Math.max(T.l - r.r, 0, r.l - T.r), Math.max(T.t - r.b, 0, r.t - T.b));
+    let melhor = null;
+    for (const [k, html] of [F.textoCita, F.textoCitaDuas].entries()) {
+      el.innerHTML = html; el.style.left = '0px'; el.style.top = '0px';
+      const { width: w, height: h } = el.getBoundingClientRect();
+      for (let x = 24; x <= W - w - 24; x += 12) for (let y = S.top + 6; y <= S.bottom - h; y += 12) {
+        const r = { l: x, t: y, r: x + w, b: y + h };
+        if (sobreTrecho(r)) continue;
+        let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2 + k * 40;
+        if (!melhor || pts < melhor.pts) melhor = { pts, x, y, html };
+      }
+    }
+    el.innerHTML = melhor.html; el.style.left = melhor.x + 'px'; el.style.top = melhor.y + 'px';
+    L = el.getBoundingClientRect();
+    const tc = { x: (T.l + T.r) / 2, y: (T.t + T.b) / 2 };
+    z = { x: Math.min(Math.max(tc.x, T.l - 16), T.r + 16), y: Math.min(Math.max(tc.y, T.t - 16), T.b + 16) };
+    // ponta na borda do alvo mais próxima da etiqueta
+    const lc = { x: (L.left + L.right) / 2, y: (L.top + L.bottom) / 2 };
+    z = { x: Math.min(Math.max(lc.x, T.l - 14), T.r + 14), y: Math.min(Math.max(lc.y, T.t - 14), T.b + 14) };
+    F.centro = { x: cx0, y: cy0 };
+  }
+  // seta à mão: sai da borda da etiqueta mais próxima da ponta, com curva suave para fora da Bíblia
+  const a = { x: Math.min(Math.max(z.x, L.left + 14), L.right - 14), y: Math.min(Math.max(z.y, L.top - 12), L.bottom + 12) };
+  if (a.y > L.top && a.y < L.bottom) a.x = z.x < L.left ? L.left - 12 : L.right + 12; else a.y = z.y < L.top ? L.top - 12 : L.bottom + 12;
+  const dx = z.x - a.x, dy = z.y - a.y, len = Math.hypot(dx, dy) || 1;
+  let nx = -dy / len, ny = dx / len;
+  const ctr = F.centro || { x: W / 2, y: H / 2 }, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
+  if ((mx + nx * 10 - ctr.x) ** 2 + (my + ny * 10 - ctr.y) ** 2 < (mx - ctr.x) ** 2 + (my - ctr.y) ** 2) { nx = -nx; ny = -ny; }
+  const c = { x: mx + nx * len * .22, y: my + ny * len * .22 };
   const ang = Math.atan2(z.y - c.y, z.x - c.x), k = 24;
   const p1 = { x: z.x - k * Math.cos(ang - .45), y: z.y - k * Math.sin(ang - .45) }, p2 = { x: z.x - k * Math.cos(ang + .45), y: z.y - k * Math.sin(ang + .45) };
-  sv.setAttribute('width', innerWidth); sv.setAttribute('height', innerHeight);
+  sv.setAttribute('width', W); sv.setAttribute('height', H);
   sv.innerHTML = `<path d="M${a.x} ${a.y} Q ${c.x} ${c.y} ${z.x} ${z.y} M${p1.x} ${p1.y} L${z.x} ${z.y} L${p2.x} ${p2.y}" fill="none" stroke="#F6EBDD" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
 
