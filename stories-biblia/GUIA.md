@@ -76,6 +76,12 @@ Exemplo do padrão nas 3 redes: [referencia/exemplo-salmos-139-7-14.png](referen
 
 O cabeçalho do capítulo na página e, **ao lado da Bíblia, sobre o veludo**, a etiqueta com a referência por extenso e uma seta curta até o cabeçalho (`"citacao": "cabecalho", "etiqueta": "caixinha"`). A etiqueta procura sozinha o lugar livre de veludo mais perto do cabeçalho; pode avançar pelas laterais (no TikTok pode ficar sob os botões), mas nunca pelo topo nem pela base reservados. Em letra à mão (`"etiqueta": "mao"`) ela fica legível, porque o veludo é escuro.
 
+### Só a caixinha no veludo, sem cabeçalho em destaque (em teste, Instagram)
+
+A página fica como no padrão (a abertura do capítulo desfocada com o resto) e a caixinha vai ao lado, sobre o veludo, com a seta encostando no fim da primeira linha do trecho (`"etiqueta": "caixinha"`, sem `citacao`). Quando não cabe numa linha, a referência quebra em duas ("Salmos 139:7-14" / "NVI").
+
+Exemplo: [saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png](saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png) (gerado por `pedidos/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.json`)
+
 ## Áreas livres (iguais ao modelo de livros)
 
 | Área | Instagram | TikTok | Pinterest vertical |

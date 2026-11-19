@@ -298,14 +298,14 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0,
+                    etiqueta, lugar, safe0, linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
                     contorno: [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; }),
                     alvoCita: (() => { const els = [...document.querySelectorAll('.c2 .cabeco-cap .nome span, .c2 .cabeco-cap .num')]; let r;
                       if (els.length) { const rs = els.map(e => { const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect(); }).filter(q => q.width);
                         r = { left: Math.min(...rs.map(q => q.left)), right: Math.max(...rs.map(q => q.right)), top: Math.min(...rs.map(q => q.top)), bottom: Math.max(...rs.map(q => q.bottom)) }; }
-                      r = r || { left: ri.left - 4, right: ri.left + 4, top: ri.top - 4, bottom: ri.top + 4 }; return { l: r.left, r: r.right, t: r.top, b: r.bottom }; })() };
+                      if (!r) { const l1 = mts()[0].getClientRects()[0]; const yy = l1.top + f * .62; r = { left: l1.right + 4, right: l1.right + 6, top: yy - 1, bottom: yy + 1, ponto: true }; } return { l: r.left, r: r.right, t: r.top, b: r.bottom, ponto: !!r.ponto }; })() };
 
   return { fonte: f, cabe: m.cabe };
 };
@@ -378,7 +378,7 @@ function desenharCitacao() {
     const poly = F.contorno, T = F.alvoCita, cx0 = poly.reduce((a, p) => a + p.x, 0) / 4, cy0 = poly.reduce((a, p) => a + p.y, 0) / 4;
     const dentro = (x, y) => { let c = false; for (let i = 0, j = 3; i < 4; j = i++) { const a = poly[i], b = poly[j]; if (((a.y > y) !== (b.y > y)) && (x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x)) c = !c; } return c; };
     const M = 24, toca = r => { for (let x = r.l - M; x <= r.r + M; x += 12) for (let y = r.t - M; y <= r.b + M; y += 12) if (dentro(x, y)) return true; return false; };
-    const C = F.caixa, sobreTrecho = r => !(r.r < C.l - 20 || r.l > C.r + 20 || r.b < C.t - 20 || r.t > C.b + 20);
+    const sobreTrecho = r => F.linhasFoco.some(C => !(r.r < C.l - 20 || r.l > C.r + 20 || r.b < C.t - 20 || r.t > C.b + 20));
     const gap = r => Math.hypot(Math.max(T.l - r.r, 0, r.l - T.r), Math.max(T.t - r.b, 0, r.t - T.b));
     let melhor = null;
     for (const [k, html] of [F.textoCita, F.textoCitaDuas].entries()) {
@@ -397,7 +397,8 @@ function desenharCitacao() {
     z = { x: Math.min(Math.max(tc.x, T.l - 16), T.r + 16), y: Math.min(Math.max(tc.y, T.t - 16), T.b + 16) };
     // ponta na borda do alvo mais próxima da etiqueta
     const lc = { x: (L.left + L.right) / 2, y: (L.top + L.bottom) / 2 };
-    z = { x: Math.min(Math.max(lc.x, T.l - 14), T.r + 14), y: Math.min(Math.max(lc.y, T.t - 14), T.b + 14) };
+    const off = T.ponto ? 4 : 14;   // sem cabeçalho, a ponta encosta no fim da primeira linha do trecho
+    z = { x: Math.min(Math.max(lc.x, T.l - off), T.r + off), y: Math.min(Math.max(lc.y, T.t - off), T.b + off) };
     F.centro = { x: cx0, y: cy0 };
   }
   // seta à mão: sai da borda da etiqueta mais próxima da ponta, com curva suave para fora da Bíblia
