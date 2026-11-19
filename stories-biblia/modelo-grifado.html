@@ -121,6 +121,8 @@
   body.tiktok .safe { top: 150px; bottom: 450px; }
   body.pinterest .safe { top: 100px; bottom: 100px; left: 110px; right: 110px; }
   body.pinterest-vertical .safe { top: 270px; bottom: 440px; left: 195px; right: 195px; }
+  /* versão única (serve para as 3 redes): a área livre comum = a mais restrita de cada lado */
+  body.universal .safe { top: 270px; bottom: 450px; left: 195px; right: 195px; }
 </style>
 </head>
 <body>
@@ -282,6 +284,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
       const dentro = (x, y) => { let c = false; for (let i = 0, j = 3; i < 4; j = i++) { const a = poly[i], b = poly[j]; if (((a.y > y) !== (b.y > y)) && (x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x)) c = !c; } return c; };
       for (let y = safe0.top + 6; y <= safe0.bottom - ch; y += 12) for (let x = 24; x <= W - cw - 24; x += 12) {
         if (linhas.some(C => !(x + cw < C.left - 20 || x > C.right + 20 || y + ch < C.top - 20 || y > C.bottom + 20))) continue;
+        if (cfg.plataforma === 'universal' && naZonaBotoes({ l: x, t: y, r: x + cw, b: y + ch })) continue;
         let toca = false;
         for (let px = x - 24; px <= x + cw + 24 && !toca; px += 12) for (let py = y - 24; py <= y + ch + 24; py += 12) if (dentro(px, py)) { toca = true; break; }
         if (!toca) return true;
@@ -327,7 +330,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0, letraCaixinha: cfg.letraCaixinha ?? 32, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
+                    plataforma: cfg.plataforma || 'instagram', etiqueta, lugar, safe0, letraCaixinha: cfg.letraCaixinha ?? 32, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
                     etiquetaAcima: cfg.etiquetaAcima ?? (lugar === 'veludo' && !cfg.setaSaida ? 330 : undefined), linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (versao ? ' · ' + versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (versao ? `<br><small>${versao}</small>` : '') : '',
@@ -388,6 +391,8 @@ window.finalizar = async (src) => {
   desenharCitacao();
 };
 
+// botões laterais do TikTok e do Pinterest vertical (juntos): x a partir de 897, y de 710 a 1480
+const naZonaBotoes = r => r.r > 897 && r.b > 710 && r.t < 1480;
 function desenharCitacao() {
   const F = window.__foco, el = document.getElementById('cita'), sv = document.getElementById('seta-cita');
   el.className = ''; el.innerHTML = ''; sv.innerHTML = ''; sv.setAttribute('width', 0);
@@ -424,6 +429,7 @@ function desenharCitacao() {
         const r = { l: x, t: y, r: x + w, b: y + h };
         if (sobreTrecho(r)) continue;
         let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2;
+        if (F.plataforma === 'universal' && naZonaBotoes(r)) pts += 3000;
         if (F.etiquetaAcima != null) pts += Math.abs(((T.t + T.b) / 2 - (y + h / 2)) - F.etiquetaAcima) * 1.5;   // caixinha mais alta ou mais baixa
         if (F.etiquetaAcima != null) pts += (F.letraCaixinha - fs) * 22;   // prefere letra maior
         if (!melhor || pts < melhor.pts) melhor = { pts, x, y, fs };
@@ -464,11 +470,16 @@ function desenharCitacao() {
     const LF = F.linhasFoco, bb = { l: Math.min(...LF.map(q => q.l)), r: Math.max(...LF.map(q => q.r)), t: Math.min(...LF.map(q => q.t)), b: Math.max(...LF.map(q => q.b)) };
     const Cc = { x: (bb.l + bb.r) / 2, y: (bb.t + bb.b) / 2 };
     const sx = Math.sign(a0.x - Cc.x) || 1;   // lado do veludo onde está a caixinha
-    const yt = bb.t + (bb.b - bb.t) * (F.setaAltura ?? .32), poly = F.contorno, xs = [];
-    for (let i = 0; i < 4; i++) { const p = poly[i], q = poly[(i + 1) % 4]; if (p.y !== q.y && (p.y - yt) * (q.y - yt) <= 0) xs.push(p.x + (yt - p.y) * (q.x - p.x) / (q.y - p.y)); }
-    const Ex = xs.length ? (sx > 0 ? Math.max(...xs) : Math.min(...xs)) : (sx > 0 ? bb.r : bb.l);
-    const ux = Ex - Cc.x, uy = yt - Cc.y, ul = Math.hypot(ux, uy) || 1, folga = F.setaFolga ?? 46;
-    z = { x: Math.min(W - 30, Math.max(30, Ex + ux / ul * folga)), y: yt + uy / ul * folga };
+    const poly = F.contorno, folga = F.setaFolga ?? 46;
+    const pontaEm = alt => {
+      const yt = bb.t + (bb.b - bb.t) * alt, xs = [];
+      for (let i = 0; i < 4; i++) { const p = poly[i], q = poly[(i + 1) % 4]; if (p.y !== q.y && (p.y - yt) * (q.y - yt) <= 0) xs.push(p.x + (yt - p.y) * (q.x - p.x) / (q.y - p.y)); }
+      const Ex = xs.length ? (sx > 0 ? Math.max(...xs) : Math.min(...xs)) : (sx > 0 ? bb.r : bb.l);
+      const ux = Ex - Cc.x, uy = yt - Cc.y, ul = Math.hypot(ux, uy) || 1;
+      return { x: Math.min(W - 30, Math.max(30, Ex + ux / ul * folga)), y: yt + uy / ul * folga };
+    };
+    let alt = F.setaAltura ?? .32; z = pontaEm(alt);
+    if (F.plataforma === 'universal') while (alt > 0 && naZonaBotoes({ l: z.x - 30, r: z.x + 30, t: z.y - 30, b: z.y + 30 })) { alt -= .03; z = pontaEm(Math.max(0, alt)); }
     const D = Math.hypot(z.x - a0.x, z.y - a0.y);
     // curva pelos ângulos: sai descendo (um pouco para o lado do veludo) e chega ao trecho vindo do veludo -> "S" aberto
     const rad = g => g * Math.PI / 180, h = D * (F.setaS ?? .5);
@@ -507,13 +518,14 @@ window.mapa = (MIN) => {
     .cota{color:#BFD6FF;font-size:22px;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.7)}`;
   document.head.appendChild(st);
   const safe = document.querySelector('.safe').getBoundingClientRect(), lat = Math.round(safe.left), H = innerHeight;
-  const tt = document.body.classList.contains('tiktok'), pv = document.body.classList.contains('pinterest-vertical'), pin = document.body.classList.contains('pinterest');
+  const tt = document.body.classList.contains('tiktok'), pv = document.body.classList.contains('pinterest-vertical'), pin = document.body.classList.contains('pinterest'), uni = document.body.classList.contains('universal');
   const T = Math.round(safe.top), Bs = Math.round(H - safe.bottom);
   const sub = t => `<br><span style="font-weight:400;font-size:24px">${t}</span>`;
-  add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(tt ? 'abas Seguindo / Para você · busca' : pv ? 'fechar · perfil · botões do topo' : pin ? 'botões Salvar e menu' : 'nome do perfil · barra de progresso'), 'z');
-  add(`left:0;right:0;bottom:0;height:${Bs}px`, `BASE RESERVADA · ${Bs} px` + sub(tt ? 'nome · legenda · música · barra de navegação' : pv ? 'título · descrição · Salvar · comentários' : pin ? 'ícone de busca visual' : 'caixa de resposta · curtir · enviar'), 'z');
+  add(`left:0;right:0;top:0;height:${T}px`, `TOPO RESERVADO · ${T} px` + sub(uni ? 'o maior das 3 redes (Pinterest vertical)' : tt ? 'abas Seguindo / Para você · busca' : pv ? 'fechar · perfil · botões do topo' : pin ? 'botões Salvar e menu' : 'nome do perfil · barra de progresso'), 'z');
+  add(`left:0;right:0;bottom:0;height:${Bs}px`, `BASE RESERVADA · ${Bs} px` + sub(uni ? 'a maior das 3 redes (TikTok)' : tt ? 'nome · legenda · música · barra de navegação' : pv ? 'título · descrição · Salvar · comentários' : pin ? 'ícone de busca visual' : 'caixa de resposta · curtir · enviar'), 'z');
   add(`left:0;width:${lat}px;top:${T}px;bottom:${Bs}px`, '', 'lat');
   add(`right:0;width:${lat}px;top:${T}px;bottom:${Bs}px`, '', 'lat');
+  if (uni) add(`left:897px;right:12px;top:710px;height:770px;background:rgba(230,80,80,.22);border:3px dashed rgba(255,120,120,.85);border-radius:12px;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, 'botões<br>TikTok e<br>Pinterest');
   if (tt || pv) add(`right:12px;width:${lat - 24}px;top:${T + 560}px;height:${H - Bs - T - 560}px;background:rgba(230,80,80,.22);border:3px dashed rgba(255,120,120,.85);border-radius:12px;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3`, pv ? 'botões<br>reagir<br>comentar<br>compartilhar' : 'botões<br>curtir<br>comentar<br>salvar<br>compartilhar');
   add(`left:20px;top:${tt ? 900 : pv ? 1000 : 1080}px;transform:rotate(-90deg);transform-origin:left top`, `margem lateral · ${lat} px`, 'cota');
   const b = window.__foco.caixa;

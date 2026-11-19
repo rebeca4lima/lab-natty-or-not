@@ -57,7 +57,7 @@ const fs = require('fs'), path = require('path');
 // TikTok e Pinterest: sempre 1 imagem; mínimo recomendado 20. Se não couber nem com 20,
 // a letra continua diminuindo até 16 e o script avisa (o ideal é encurtar o trecho).
 const MAX = 50;
-const MIN_PLATAFORMA = { instagram: 24, tiktok: 20, pinterest: 20, 'pinterest-vertical': 20 };
+const MIN_PLATAFORMA = { instagram: 24, tiktok: 20, pinterest: 20, 'pinterest-vertical': 20, universal: 24 };
 const LIMITE_ABSOLUTO = 16;
 
 // Divide o trecho em 2 partes no fim de um versículo, o mais perto possível da metade (em letras)
@@ -84,8 +84,9 @@ const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
     await p.goto('file://' + path.join(__dirname, `modelo-${cfg.estilo || 'grifado'}.html`));
     await p.waitForLoadState('networkidle');
     // 1) monta a cena nítida  2) "fotografa"  3) aplica foco progressivo, tom e granulado
-    const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo ? LIMITE_ABSOLUTO : MIN]);
-    if (!r.cabe) r.aviso = umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
+    const universal = plataforma === 'universal';
+    const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo && !universal ? LIMITE_ABSOLUTO : MIN]);
+    if (!r.cabe) r.aviso = universal ? 'não coube na versão única com letra 24: gere as 3 versões (o Instagram vira 2 stories)' : umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
     else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
     const cru = await p.screenshot();
     await p.evaluate(s => window.finalizar(s), 'data:image/png;base64,' + cru.toString('base64'));

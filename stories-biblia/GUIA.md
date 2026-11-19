@@ -69,6 +69,21 @@ As cartas na manga combinam: "em 2 stories com traço" faz cada story no jeito B
 
 O trecho fica sempre **inteiro dentro da área livre**. A caixinha também fica entre o topo e a base livres, mas pode avançar pelas laterais (no TikTok e no Pinterest ela costuma ficar acima da coluna de botões; se um dia cair sob eles, tudo bem). A página da Bíblia pode passar por baixo das áreas reservadas, porque ali ela já está desfocada.
 
+## Versão única para as 3 redes (`"plataforma": "universal"`)
+
+Como as 3 redes usam 1080 × 1920, uma imagem só serve para todas se o trecho, a caixinha e a seta ficarem na área livre **comum**: topo 270 px (Pinterest), base 450 px (TikTok), laterais 195 px (Pinterest), e a caixinha e a ponta da seta longe da coluna de botões do TikTok e do Pinterest.
+
+![Versão única vista em cada rede](referencia/versao-unica-salmos-140.png)
+
+| Trecho | Versão única | Instagram / Pinterest / TikTok separados |
+|---|---|---|
+| Salmos 140:7-8 | letra 37 | 43 / 37 / 40 |
+| Salmos 23:4 | letra 42 | 48 / 42 / 45 |
+| Salmos 139:7-14 | letra 33 | 37 / 33 / 37 |
+| 1 Coríntios 13:4-7 | letra 33 | 39 / 34 / 36 |
+
+A letra fica igual à do Pinterest vertical (a rede mais restrita), um pouco menor que no Instagram. A letra mínima é 24: se o trecho não couber, o script avisa para gerar as 3 versões (o Instagram vira 2 stories). Exemplo com 8 versículos: [referencia/versao-unica-salmos-139.png](referencia/versao-unica-salmos-139.png).
+
 ## Opções (é só pedir)
 
 | Você diz | Resultado |
