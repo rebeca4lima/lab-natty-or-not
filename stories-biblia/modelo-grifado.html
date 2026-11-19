@@ -298,7 +298,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0, linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
+                    etiqueta, lugar, safe0, setaSaida: cfg.setaSaida || 'auto', etiquetaAcima: cfg.etiquetaAcima, linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
                     contorno: [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; }),
@@ -383,14 +383,18 @@ function desenharCitacao() {
     // sempre em uma linha ("Salmos 139:7-14 · NVI"); se não couber no veludo, a letra diminui (40 até 28)
     let melhor = null;
     el.innerHTML = F.textoCita;
-    for (let fs = 40; fs >= 28 && !(melhor && melhor.pts < 3000); fs -= 2) {
+    // testa todos os tamanhos (40 a 28) e escolhe o melhor lugar; letra menor tem uma pequena penalidade
+    // padrão: para no primeiro tamanho que cabe; com "etiquetaAcima", testa todos e aceita letra menor para descer
+    for (let fs = 40; fs >= 28 && (F.etiquetaAcima != null || !(melhor && melhor.pts < 3000)); fs -= 2) {
+      if (F.etiquetaAcima == null) melhor = null;
       el.style.fontSize = fs + 'px'; el.style.left = '0px'; el.style.top = '0px';
       const { width: w, height: h } = el.getBoundingClientRect();
-      melhor = null;
       for (let x = 24; x <= W - w - 24; x += 12) for (let y = S.top + 6; y <= S.bottom - h; y += 12) {
         const r = { l: x, t: y, r: x + w, b: y + h };
         if (sobreTrecho(r)) continue;
         let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2;
+        if (F.etiquetaAcima != null) pts += Math.abs(((T.t + T.b) / 2 - (y + h / 2)) - F.etiquetaAcima) * 1.5;   // caixinha mais alta ou mais baixa
+        if (F.etiquetaAcima != null) pts += (40 - fs) * 6;
         if (!melhor || pts < melhor.pts) melhor = { pts, x, y, fs };
       }
     }
@@ -412,7 +416,12 @@ function desenharCitacao() {
   let nx = -dy / len, ny = dx / len;
   const ctr = F.centro || { x: W / 2, y: H / 2 }, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
   if ((mx + nx * 10 - ctr.x) ** 2 + (my + ny * 10 - ctr.y) ** 2 < (mx - ctr.x) ** 2 + (my - ctr.y) ** 2) { nx = -nx; ny = -ny; }
-  const c = { x: mx + nx * len * .22, y: my + ny * len * .22 };
+  let c = { x: mx + nx * len * .22, y: my + ny * len * .22 };
+  if (F.setaSaida && F.setaSaida !== 'auto' && F.lugar !== 'trecho') {
+    a.x = F.setaSaida === 'direita' ? L.right - 26 : F.setaSaida === 'meio' ? (L.left + L.right) / 2 : L.left + 26;
+    a.y = z.y > L.bottom ? L.bottom + 12 : L.top - 12;
+    c = { x: a.x, y: z.y };   // desce reto e vira em direção à ponta
+  }
   const ang = Math.atan2(z.y - c.y, z.x - c.x), k = 24;
   const p1 = { x: z.x - k * Math.cos(ang - .45), y: z.y - k * Math.sin(ang - .45) }, p2 = { x: z.x - k * Math.cos(ang + .45), y: z.y - k * Math.sin(ang + .45) };
   sv.setAttribute('width', W); sv.setAttribute('height', H);

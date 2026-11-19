@@ -25,6 +25,9 @@
 //                Combina com "citacao": "cabecalho" (a seta aponta para o cabeçalho do capítulo).
 //   etiquetaLugar: "veludo" (padrão: ao lado da Bíblia, no lugar livre mais perto do cabeçalho; pode avançar pelas laterais,
 //                nunca pelo topo nem pela base reservados) | "trecho" (logo acima do começo do trecho, por cima da página)
+//   setaSaida  : de onde sai a seta da etiqueta: "auto" (padrão: canto mais perto do trecho) | "esquerda" | "meio" | "direita"
+//                (com esquerda/meio/direita a seta desce da base da caixinha e faz a curva até o trecho, mais longa)
+//   etiquetaAcima: quantos px a caixinha fica acima da ponta da seta (ex.: 80 = mais baixa); aceita letra menor para caber
 //   antes      : versículos que vêm antes do trecho, na mesma coluna (ficam desfocados)
 //   depois     : versículos que vêm depois do trecho
 //   outraColuna: texto da coluna da esquerda (desfocada)
