@@ -78,7 +78,7 @@ O cabeçalho do capítulo na página e, **ao lado da Bíblia, sobre o veludo**, 
 
 ### Só a caixinha no veludo, sem cabeçalho em destaque (em teste, Instagram)
 
-A página fica como no padrão (a abertura do capítulo desfocada com o resto) e a caixinha vai ao lado, sobre o veludo, com a seta encostando no fim da primeira linha do trecho (`"etiqueta": "caixinha"`, sem `citacao`). Quando não cabe numa linha, a referência quebra em duas ("Salmos 139:7-14" / "NVI").
+A página fica como no padrão (a abertura do capítulo desfocada com o resto) e a caixinha vai ao lado, sobre o veludo, com a seta encostando no fim da primeira linha do trecho (`"etiqueta": "caixinha"`, sem `citacao`). A referência fica sempre em **uma linha** ("Salmos 139:7-14 · NVI"), numa caixinha comprida e fina; se o veludo não tiver espaço, a letra diminui de 40 até 28.
 
 Exemplo: [saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png](saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png) (gerado por `pedidos/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.json`)
 

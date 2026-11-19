@@ -110,7 +110,7 @@
   #cita { position: absolute; z-index: 10; white-space: nowrap; display: none; text-align: center; }
   #cita small { font-size: .72em; letter-spacing: .22em; }
   #cita.caixinha { display: block; background: rgba(243,234,223,.95); color: #5E1621; font-family: 'EB Garamond', serif; font-size: 40px; letter-spacing: .02em;
-                   padding: 8px 24px 12px; border-radius: 12px; box-shadow: 0 6px 22px rgba(30,5,5,.35); }
+                   padding: .14em .6em .22em; border-radius: 10px; box-shadow: 0 6px 22px rgba(30,5,5,.35); }
   #cita.mao { display: block; color: #F6EBDD; font-family: 'Caveat', cursive; font-weight: 600; font-size: 66px; line-height: 1;
               text-shadow: 0 1px 12px rgba(30,5,5,.7), 0 0 2px rgba(30,5,5,.5); }
   #seta-cita { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 10; overflow: visible; filter: drop-shadow(0 1px 5px rgba(30,5,5,.55)); }
@@ -380,18 +380,22 @@ function desenharCitacao() {
     const M = 24, toca = r => { for (let x = r.l - M; x <= r.r + M; x += 12) for (let y = r.t - M; y <= r.b + M; y += 12) if (dentro(x, y)) return true; return false; };
     const sobreTrecho = r => F.linhasFoco.some(C => !(r.r < C.l - 20 || r.l > C.r + 20 || r.b < C.t - 20 || r.t > C.b + 20));
     const gap = r => Math.hypot(Math.max(T.l - r.r, 0, r.l - T.r), Math.max(T.t - r.b, 0, r.t - T.b));
+    // sempre em uma linha ("Salmos 139:7-14 · NVI"); se não couber no veludo, a letra diminui (40 até 28)
     let melhor = null;
-    for (const [k, html] of [F.textoCita, F.textoCitaDuas].entries()) {
-      el.innerHTML = html; el.style.left = '0px'; el.style.top = '0px';
+    el.innerHTML = F.textoCita;
+    for (let fs = 40; fs >= 28 && !(melhor && melhor.pts < 3000); fs -= 2) {
+      el.style.fontSize = fs + 'px'; el.style.left = '0px'; el.style.top = '0px';
       const { width: w, height: h } = el.getBoundingClientRect();
+      melhor = null;
       for (let x = 24; x <= W - w - 24; x += 12) for (let y = S.top + 6; y <= S.bottom - h; y += 12) {
         const r = { l: x, t: y, r: x + w, b: y + h };
         if (sobreTrecho(r)) continue;
-        let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2 + k * 40;
-        if (!melhor || pts < melhor.pts) melhor = { pts, x, y, html };
+        let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2;
+        if (!melhor || pts < melhor.pts) melhor = { pts, x, y, fs };
       }
     }
-    el.innerHTML = melhor.html; el.style.left = melhor.x + 'px'; el.style.top = melhor.y + 'px';
+    el.style.fontSize = melhor.fs + 'px'; el.style.left = melhor.x + 'px'; el.style.top = melhor.y + 'px';
+    F.fonteCita = melhor.fs;
     L = el.getBoundingClientRect();
     const tc = { x: (T.l + T.r) / 2, y: (T.t + T.b) / 2 };
     z = { x: Math.min(Math.max(tc.x, T.l - 16), T.r + 16), y: Math.min(Math.max(tc.y, T.t - 16), T.b + 16) };
