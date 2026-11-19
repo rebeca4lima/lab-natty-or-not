@@ -298,7 +298,8 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    etiqueta, lugar, safe0, setaSaida: cfg.setaSaida || 'auto', etiquetaAcima: cfg.etiquetaAcima, linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
+                    etiqueta, lugar, safe0, setaS: cfg.setaS, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
+                    etiquetaAcima: cfg.etiquetaAcima ?? (lugar === 'veludo' && !cfg.setaSaida ? 330 : undefined), linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (cfg.versao ? ' · ' + cfg.versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (cfg.versao ? `<br><small>${cfg.versao}</small>` : '') : '',
                     contorno: [...document.querySelectorAll('.capa .canto')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top }; }),
@@ -394,7 +395,7 @@ function desenharCitacao() {
         if (sobreTrecho(r)) continue;
         let pts = Math.abs(gap(r) - 120) + (toca(r) ? 3000 : 0) + (Math.max(0, S.left - x) + Math.max(0, x + w - S.right)) * 1.2;
         if (F.etiquetaAcima != null) pts += Math.abs(((T.t + T.b) / 2 - (y + h / 2)) - F.etiquetaAcima) * 1.5;   // caixinha mais alta ou mais baixa
-        if (F.etiquetaAcima != null) pts += (40 - fs) * 6;
+        if (F.etiquetaAcima != null) pts += (40 - fs) * 22;   // prefere letra maior
         if (!melhor || pts < melhor.pts) melhor = { pts, x, y, fs };
       }
     }
@@ -422,10 +423,36 @@ function desenharCitacao() {
     a.y = z.y > L.bottom ? L.bottom + 12 : L.top - 12;
     c = { x: a.x, y: z.y };   // desce reto e vira em direção à ponta
   }
+  sv.setAttribute('width', W); sv.setAttribute('height', H);
+  const COR = '#F6EBDD';
+  if ((F.setaSaida === 'fluida') && F.lugar !== 'trecho') {
+    // seta fluida, como feita com o dedo: sai do centro da base da caixinha, faz um "S" suave e chega ao trecho.
+    // Traço de caneta: fino no começo, mais cheio no meio, afinando perto da ponta.
+    const a0 = { x: (L.left + L.right) / 2, y: L.bottom + 14 };
+    const D = Math.hypot(z.x - a0.x, z.y - a0.y), sx = Math.sign(a0.x - z.x) || 1;   // sx: lado do veludo (para fora da Bíblia)
+    // curva pelos ângulos: sai descendo (um pouco para o lado do veludo) e chega ao trecho vindo do veludo -> "S" aberto
+    const rad = g => g * Math.PI / 180, h = D * (F.setaS ?? .42);
+    const t0 = sx > 0 ? rad(78) : rad(102), t1 = sx > 0 ? rad(162) : rad(18);
+    const P1 = { x: a0.x + h * Math.cos(t0), y: a0.y + h * Math.sin(t0) };
+    const P2 = { x: z.x - h * Math.cos(t1), y: z.y - h * Math.sin(t1) };
+    const B = t => { const u = 1 - t; return { x: u*u*u*a0.x + 3*u*u*t*P1.x + 3*u*t*t*P2.x + t*t*t*z.x, y: u*u*u*a0.y + 3*u*u*t*P1.y + 3*u*t*t*P2.y + t*t*t*z.y }; };
+    const N = 90, pts = Array.from({ length: N + 1 }, (_, i) => B(i / N));
+    const larg = t => 1.5 + 2.3 * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.15)), .6) + (t > .87 ? .7 : 0);
+    const esq = [], dir = [];
+    pts.forEach((p, i) => {
+      const q0 = pts[Math.max(0, i - 1)], q1 = pts[Math.min(N, i + 1)], tx = q1.x - q0.x, ty = q1.y - q0.y, tl = Math.hypot(tx, ty) || 1;
+      const w = larg(i / N) / 2, nx = -ty / tl, ny = tx / tl;
+      esq.push(`${(p.x + nx * w).toFixed(1)},${(p.y + ny * w).toFixed(1)}`); dir.unshift(`${(p.x - nx * w).toFixed(1)},${(p.y - ny * w).toFixed(1)}`);
+    });
+    const ang = Math.atan2(z.y - P2.y, z.x - P2.x), k = 26, ab = .5;
+    const h1 = { x: z.x - k * Math.cos(ang - ab), y: z.y - k * Math.sin(ang - ab) }, h2 = { x: z.x - k * Math.cos(ang + ab), y: z.y - k * Math.sin(ang + ab) };
+    sv.innerHTML = `<polygon points="${esq.join(' ')} ${dir.join(' ')}" fill="${COR}"/>` +
+      `<path d="M${h1.x} ${h1.y} L${z.x} ${z.y} L${h2.x} ${h2.y}" fill="none" stroke="${COR}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return;
+  }
   const ang = Math.atan2(z.y - c.y, z.x - c.x), k = 24;
   const p1 = { x: z.x - k * Math.cos(ang - .45), y: z.y - k * Math.sin(ang - .45) }, p2 = { x: z.x - k * Math.cos(ang + .45), y: z.y - k * Math.sin(ang + .45) };
-  sv.setAttribute('width', W); sv.setAttribute('height', H);
-  sv.innerHTML = `<path d="M${a.x} ${a.y} Q ${c.x} ${c.y} ${z.x} ${z.y} M${p1.x} ${p1.y} L${z.x} ${z.y} L${p2.x} ${p2.y}" fill="none" stroke="#F6EBDD" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  sv.innerHTML = `<path d="M${a.x} ${a.y} Q ${c.x} ${c.y} ${z.x} ${z.y} M${p1.x} ${p1.y} L${z.x} ${z.y} L${p2.x} ${p2.y}" fill="none" stroke="${COR}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
 
 // mapa das zonas (só para referência): áreas reservadas por rede + onde o trecho grifado precisa caber

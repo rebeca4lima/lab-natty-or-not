@@ -80,6 +80,10 @@ O cabeçalho do capítulo na página e, **ao lado da Bíblia, sobre o veludo**, 
 
 A página fica como no padrão (a abertura do capítulo desfocada com o resto) e a caixinha vai ao lado, sobre o veludo, com a seta encostando no fim da primeira linha do trecho (`"etiqueta": "caixinha"`, sem `citacao`). A referência fica sempre em **uma linha** ("Salmos 139:7-14 · NVI"), numa caixinha comprida e fina; se o veludo não tiver espaço, a letra diminui de 40 até 28.
 
+A seta é **fluida**, como feita com o dedo nas referências "Veja..": sai do centro da caixinha, desce num "S" suave e chega ao fim da primeira linha do trecho, com traço de caneta afinando nas pontas e ponta aberta. Para a seta ter espaço, a caixinha fica uns 330 px acima do trecho.
+
+Exemplo: `saida/citacao/salmos-139-7-14-caixinha-seta-fluida-1-instagram.png`
+
 Exemplo: [saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png](saida/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.png) (gerado por `pedidos/citacao/salmos-139-7-14-caixinha-veludo-sem-cabecalho-1-instagram.json`)
 
 ## Áreas livres (iguais ao modelo de livros)
