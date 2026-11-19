@@ -44,7 +44,7 @@
 //   cor        : vinho (padrão) | cereja | castanho | vermelho   -> cor do grifo
 //   superficie : veludo (padrão) | couro | madeira
 //   tom        : vinho (padrão) | quente | pb
-//   plataforma : "instagram" (padrão) | "tiktok" | "pinterest-vertical" (1080x1920) | "pinterest" (feed 1000x1500)
+//   plataforma : "universal" (padrão: 1 imagem para as 3 redes) | "instagram" | "tiktok" | "pinterest-vertical" | "pinterest" (feed 1000x1500)
 //   minFonte   : tamanho mínimo da letra (padrão: 24 no Instagram; 20 no TikTok e no Pinterest)
 //   giro, inclinacao, lado, focoX, focoY, desfoque, escuro: ajustes finos de câmera, foco e luz
 //   mapa       : true para desenhar o mapa de zonas por cima (só para referência)
@@ -73,10 +73,11 @@ const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
 
 (async () => {
   const cfg = JSON.parse(fs.readFileSync(path.resolve(process.argv[2]), 'utf8'));
+  cfg.plataforma = cfg.plataforma || 'universal';   // padrão oficial: 1 imagem para as 3 redes
   const b = await chromium.launch();
 
   const gerarUm = async (cfg) => {
-    const plataforma = cfg.plataforma || 'instagram';
+    const plataforma = cfg.plataforma;
     const MIN = cfg.minFonte || MIN_PLATAFORMA[plataforma] || 24;
     const umaSo = plataforma !== 'instagram';
     const pin = plataforma === 'pinterest';
@@ -86,7 +87,7 @@ const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
     // 1) monta a cena nítida  2) "fotografa"  3) aplica foco progressivo, tom e granulado
     const universal = plataforma === 'universal';
     const r = await p.evaluate(([c, MAX, MIN, PISO]) => window.montar(c, MAX, MIN, PISO), [cfg, MAX, MIN, umaSo && !universal ? LIMITE_ABSOLUTO : MIN]);
-    if (!r.cabe) r.aviso = universal ? 'não coube na versão única com letra 24: gere as 3 versões (o Instagram vira 2 stories)' : umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
+    if (!r.cabe) r.aviso = universal ? 'não coube na versão única com letra 24' : umaSo ? 'não coube nem com letra 16: encurte o trecho' : 'não coube com letra 24: divida em 2 stories';
     else if (r.fonte < MIN) r.aviso = `letra ${r.fonte} abaixo do recomendado (${MIN}): considere encurtar o trecho`;
     const cru = await p.screenshot();
     await p.evaluate(s => window.finalizar(s), 'data:image/png;base64,' + cru.toString('base64'));
@@ -112,15 +113,20 @@ const parte = (saida, n) => saida.replace(/\.png$/, `-parte${n}.png`);
     await gerarUm({ ...base, texto: t2, referencia: refParte(t2), antes: (cfg.antes || '') + t1, saida: parte(cfg.saida, 2) });
   };
 
-  const instagram = (cfg.plataforma || 'instagram') === 'instagram';
-  if (cfg.dividir && instagram) await gerarDividido(cfg);
-  else {
-    const r = await gerarUm(cfg);
-    if (instagram && !r.cabe && cfg.dividir !== false) {
-      console.log('→ não coube em 1 story com letra 24: dividindo em 2');
-      fs.rmSync(path.resolve(__dirname, cfg.saida), { force: true });
-      await gerarDividido(cfg);
-    }
-  }
+  // Versão única (padrão) e Instagram: "dividir" faz 2 imagens. Se não couber com letra 24:
+  //   versão única -> gera as 3 versões por rede (-1-instagram, -2-pinterest-vertical, -3-tiktok);
+  //   Instagram    -> divide em 2 stories.
+  const gerarRede = async (c) => {
+    const ig = c.plataforma === 'instagram', uni = c.plataforma === 'universal';
+    if (c.dividir && (ig || uni)) return gerarDividido(c);
+    const r = await gerarUm(c);
+    if (r.cabe || c.dividir === false || !(ig || uni)) return;
+    fs.rmSync(path.resolve(__dirname, c.saida), { force: true });
+    if (ig) { console.log('→ não coube em 1 story com letra 24: dividindo em 2'); return gerarDividido(c); }
+    console.log('→ não coube na versão única com letra 24: gerando as 3 versões por rede');
+    for (const [i, pl] of [['1', 'instagram'], ['2', 'pinterest-vertical'], ['3', 'tiktok']])
+      await gerarRede({ ...c, plataforma: pl, saida: c.saida.replace(/\.png$/, `-${i}-${pl}.png`) });
+  };
+  await gerarRede(cfg);
   await b.close();
 })();

@@ -193,7 +193,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const B = document.body;
   const citacao = cfg.citacao || 'nenhuma';
   const ref = (cfg.referencia || '').match(/^(.*\S)\s+(\d+)(?::(\S+))?$/) || [];
-  B.className = ['cru', 'cit-' + citacao, 'tom-' + (cfg.tom || 'vinho'), cfg.plataforma || 'instagram', cfg.cor || 'vinho', cfg.superficie || 'veludo'].join(' ');
+  B.className = ['cru', 'cit-' + citacao, 'tom-' + (cfg.tom || 'vinho'), cfg.plataforma || 'universal', cfg.cor || 'vinho', cfg.superficie || 'veludo'].join(' ');
   const W = innerWidth, H = innerHeight;
   const livro = document.querySelector('.livro'), pag = document.querySelector('.pagina');
   const c1 = document.querySelector('.c1'), c2 = document.querySelector('.c2');
@@ -330,7 +330,7 @@ window.montar = async (cfg, MAX, MIN, PISO) => {
   const rgI = document.createRange(), tn = document.createTreeWalker(mts()[0], NodeFilter.SHOW_TEXT).nextNode();
   rgI.setStart(tn, 0); rgI.setEnd(tn, 1); const ri = rgI.getBoundingClientRect();
   window.__foco = { y: fy, meia: (m.b.b - m.b.t) / 2, f, desf: cfg.desfoque ?? 1, H, caixa: m.b, inicio: { x: ri.left, y: ri.top },
-                    plataforma: cfg.plataforma || 'instagram', etiqueta, lugar, safe0, letraCaixinha: cfg.letraCaixinha ?? 32, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
+                    plataforma: cfg.plataforma || 'universal', etiqueta, lugar, safe0, letraCaixinha: cfg.letraCaixinha ?? 32, setaS: cfg.setaS, setaAbre: cfg.setaAbre, setaChega: cfg.setaChega, setaAltura: cfg.setaAltura, setaFolga: cfg.setaFolga, setaSaida: cfg.setaSaida || (lugar === 'veludo' ? 'fluida' : 'auto'),
                     etiquetaAcima: cfg.etiquetaAcima ?? (lugar === 'veludo' && !cfg.setaSaida ? 330 : undefined), linhasFoco: mts().flatMap(e => [...e.getClientRects()]).map(q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom })),
                     textoCita: cfg.referencia ? cfg.referencia + (versao ? ' · ' + versao : '') : '',
                     textoCitaDuas: cfg.referencia ? cfg.referencia + (versao ? `<br><small>${versao}</small>` : '') : '',

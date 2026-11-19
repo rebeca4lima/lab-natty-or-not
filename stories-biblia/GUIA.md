@@ -1,6 +1,8 @@
 # Guia do modelo: trechos da Bíblia para o Stories (versão oficial)
 
-![Exemplo oficial nas 3 redes](referencia/exemplo-salmos-139-7-14.png)
+**Uma imagem só serve para as 3 redes:** o mesmo arquivo 1080 × 1920 vai para o Instagram (story), o TikTok e o Pinterest (pin vertical).
+
+![A mesma imagem vista em cada rede](referencia/versao-unica-salmos-140.png)
 
 ## A arte
 
@@ -15,34 +17,47 @@ Uma foto "espontânea" de uma Bíblia aberta: a página em close e na diagonal, 
 | Desfoque | Faixa nítida em volta do trecho; o desfoque aumenta **aos poucos, em 9 níveis**, para cima e para baixo (degradê suave, sem "faixas") |
 | Luz e cor | Luz baixa e quente no trecho, bordas em vinho escuro, granulado de filme |
 | Em volta | Veludo vinho, capa de couro e corte das folhas avermelhado |
-| **Caixinha** | Creme, comprida e fina, **uma linha só**: "Salmos 139:7-14 · NVI". Fica **sobre o veludo, ao lado da Bíblia**, nunca em cima da página nem do trecho. Letra 32 (diminui até 28 se o veludo for estreito) |
+| **Caixinha** | Creme, comprida e fina, **uma linha só**: "Salmos 140:7-8 · NVI". Fica **sobre o veludo, ao lado da Bíblia**, nunca em cima da página nem do trecho. Letra 32 (diminui até 28 se o veludo for estreito) |
 | **Seta** | Traço fino como feito com o dedo (afina nas pontas), ponta aberta. Sai do **centro** da caixinha, faz um arco suave pelo veludo e chega **apontando para o trecho como um todo**; a ponta para no veludo, com folga da borda da Bíblia |
 
 ## Padrão (quando você não diz nada)
 
 | Item | Padrão |
 |---|---|
-| Formato | PNG 1080 × 1920 nas 3 redes |
+| Formato | **1 imagem** PNG 1080 × 1920 para as 3 redes |
 | Versão | **NVI**, sempre (inclusive os versículos vizinhos que completam a página) |
 | Trecho curto (até 3 versículos e até 300 letras) | Trecho nítido + grifo na frase pedida (sem frase = trecho todo grifado) |
 | Trecho longo (4 versículos ou mais, ou mais de 300 letras) | **Jeito B:** trecho nítido + traço na margem + grifo na frase-chave |
 | Citação | Caixinha no veludo + seta fluida |
-| Tamanho da letra | Automático: começa em 50 px e diminui até o trecho caber na área livre **e** a caixinha caber no veludo (mínimo por rede: veja abaixo) |
+| Tamanho da letra | Automático: começa em 50 px e diminui até o trecho caber na área livre comum **e** a caixinha caber no veludo. Mínimo 24 px |
+| Se não couber com letra 24 | Gero **as 3 versões por rede** automaticamente: Instagram em 2 stories, TikTok e Pinterest em 1 imagem cada (letra mínima 20) |
 | Texto | Transcrito fielmente, sem mudar as palavras |
 | Contexto da página | Eu completo com os versículos vizinhos (antes, depois e a coluna ao lado), que ficam desfocados |
 | Textos por cima da foto | Só a caixinha e a seta. Nada de legenda, assinatura ou @ |
 
-## Letra mínima e divisão por rede
+![Exemplos](referencia/exemplos.png)
 
-| Rede | Letra mínima | Se o trecho não couber |
-|---|---|---|
-| **Instagram** | 24 px | Divido em **2 stories** automaticamente, cortando no fim de um versículo perto da metade; cada story mostra na caixinha só os versículos dele (ex.: "Salmos 139:7-10" e "Salmos 139:11-14") |
-| **TikTok** | 20 px | Sempre **1 imagem** |
-| **Pinterest vertical** | 20 px | Sempre **1 pin** |
+| Trecho | Letra na imagem única |
+|---|---|
+| Salmos 140:7-8 | 37 |
+| Salmos 23:4 | 42 |
+| Salmos 139:7-14 (8 versículos) | 33 |
+| 1 Coríntios 13:4-7 | 33 |
 
-No TikTok e no Pinterest, se o trecho não couber nem com letra 20, a letra continua diminuindo até 16 e eu aviso. Nesse caso, o ideal é encurtar o trecho.
+Até uns 8 versículos cabem em uma imagem com folga. Num teste com 18 versículos, a imagem única não coube e o script gerou as 3 versões sozinho (Instagram em 2 stories com letra 35 e 34).
 
-Nos exemplos: Salmos 139:7-14 (8 versículos) ficou com letra 37 (Instagram e TikTok) e 33 (Pinterest vertical); Salmos 23:4 com 48 / 42 / 45; 1 Coríntios 13:4-7 com 39 / 34 / 36.
+## Área livre comum (a mais restrita de cada rede)
+
+![Mapa da imagem única](referencia/mapa.png)
+
+| Área | Instagram | TikTok | Pinterest vertical | **Imagem única** |
+|---|---|---|---|---|
+| Topo livre | 250 px | 150 px | 270 px | **270 px** |
+| Base livre | 250 px | 450 px | 440 px | **450 px** |
+| Laterais livres | 150 px | 150 px | 195 px | **195 px** |
+| Botões na lateral direita | não | sim | sim | **a caixinha e a ponta da seta ficam fora** |
+
+O trecho fica sempre inteiro dentro da área livre comum. A caixinha fica entre o topo e a base livres e longe da coluna de botões do TikTok e do Pinterest (pode avançar pelas laterais acima dela). A página da Bíblia pode passar por baixo das áreas reservadas, porque ali ela já está desfocada.
 
 ## Trechos longos: o padrão e as cartas na manga
 
@@ -52,37 +67,10 @@ Nos exemplos: Salmos 139:7-14 (8 versículos) ficou com letra 37 (Instagram e Ti
 |---|---|---|---|
 | **Padrão** | **B · Traço na margem + grifo na frase-chave** | Trecho todo nítido, traço vinho na margem, marca-texto só na frase-chave | É o padrão: basta mandar o trecho e dizer a frase. Se você não disser, eu escolho a frase mais marcante e te aviso |
 | Carta na manga | **A · Tudo grifado** | Marca-texto em todas as linhas do trecho | "tudo grifado" |
-| Carta na manga | **C · Em 2 stories** | Instagram em 2 stories, cada um com metade do trecho grifado, letra maior e a própria referência na caixinha. TikTok e Pinterest continuam em 1 imagem | "em 2 stories" (ou "divide em 2") |
+| Carta na manga | **C · Em 2 imagens** | 2 imagens, cada uma com metade do trecho grifado, letra maior e a própria referência na caixinha (ex.: "Salmos 139:7-10" e "Salmos 139:11-14") | "em 2 stories" (ou "divide em 2") |
+| Carta na manga | **Versões por rede** | 3 arquivos, cada um com a área livre só da sua rede: a letra fica um pouco maior no Instagram e no TikTok | "faz as 3 versões" |
 
-As cartas na manga combinam: "em 2 stories com traço" faz cada story no jeito B.
-
-## Áreas livres (iguais ao modelo de livros)
-
-![Mapa das 3 redes](referencia/mapas-3-redes.png)
-
-| Área | Instagram | TikTok | Pinterest vertical |
-|---|---|---|---|
-| Tamanho | 1080 × 1920 | 1080 × 1920 | 1080 × 1920 |
-| Topo livre | 250 px | 150 px | 270 px |
-| Base livre | 250 px | 450 px | 440 px |
-| Laterais livres | 150 px | 150 px | 195 px |
-
-O trecho fica sempre **inteiro dentro da área livre**. A caixinha também fica entre o topo e a base livres, mas pode avançar pelas laterais (no TikTok e no Pinterest ela costuma ficar acima da coluna de botões; se um dia cair sob eles, tudo bem). A página da Bíblia pode passar por baixo das áreas reservadas, porque ali ela já está desfocada.
-
-## Versão única para as 3 redes (`"plataforma": "universal"`)
-
-Como as 3 redes usam 1080 × 1920, uma imagem só serve para todas se o trecho, a caixinha e a seta ficarem na área livre **comum**: topo 270 px (Pinterest), base 450 px (TikTok), laterais 195 px (Pinterest), e a caixinha e a ponta da seta longe da coluna de botões do TikTok e do Pinterest.
-
-![Versão única vista em cada rede](referencia/versao-unica-salmos-140.png)
-
-| Trecho | Versão única | Instagram / Pinterest / TikTok separados |
-|---|---|---|
-| Salmos 140:7-8 | letra 37 | 43 / 37 / 40 |
-| Salmos 23:4 | letra 42 | 48 / 42 / 45 |
-| Salmos 139:7-14 | letra 33 | 37 / 33 / 37 |
-| 1 Coríntios 13:4-7 | letra 33 | 39 / 34 / 36 |
-
-A letra fica igual à do Pinterest vertical (a rede mais restrita), um pouco menor que no Instagram. A letra mínima é 24: se o trecho não couber, o script avisa para gerar as 3 versões (o Instagram vira 2 stories). Exemplo com 8 versículos: [referencia/versao-unica-salmos-139.png](referencia/versao-unica-salmos-139.png).
+As cartas na manga combinam: "em 2 stories com traço" faz cada imagem no jeito B. As versões por rede estão explicadas em [referencia/por-rede/](referencia/por-rede/) (mapas e exemplos de cada rede).
 
 ## Opções (é só pedir)
 
@@ -91,7 +79,8 @@ A letra fica igual à do Pinterest vertical (a rede mais restrita), um pouco men
 | "[referência], grifa [frase]" | Grifo vinho só na frase pedida |
 | "grifa [frase 1] e [frase 2]" | Dois (ou mais) grifos separados no mesmo trecho |
 | "tudo grifado" | Carta na manga A |
-| "em 2 stories" / "divide em 2" | Carta na manga C (só Instagram) |
+| "em 2 stories" / "divide em 2" | Carta na manga C |
+| "faz as 3 versões" | Uma imagem por rede (Instagram, Pinterest vertical, TikTok) |
 | "sem traço" / "com traço" | Tira ou põe o traço na margem |
 | "sem caixinha" | Só a foto, sem a referência |
 | "grifo cereja / castanho / vermelho" | Grifo nessa cor |
@@ -100,11 +89,9 @@ A letra fica igual à do Pinterest vertical (a rede mais restrita), um pouco men
 
 **Exemplo de pedido:**
 
-> [print] Salmos 139:7-14, grifa "Eu te louvo porque me fizeste de modo assombroso e admirável"
+> [print] Salmos 140:7-8, foco de "Ó Soberano Senhor" até "se orgulhem", grifa o 8 inteiro
 
-Resultado: [referencia/exemplo-salmos-139-7-14.png](referencia/exemplo-salmos-139-7-14.png)
-
-Outros exemplos: [Salmos 23:4](referencia/exemplo-salmos-23-4.png) (trecho curto) e [1 Coríntios 13:4-7](referencia/exemplo-1-corintios-13-4-7.png) (dois grifos).
+Resultado: `saida/2026-11-19-salmos-140-7-8.png` (um arquivo para as 3 redes).
 
 ## Paleta
 
@@ -135,3 +122,4 @@ Pasta [`referencia/historico/`](referencia/historico/):
 - `citacao-3-opcoes.png`: como citar o versículo (cabeçalho em destaque, caixinha, letra à mão).
 - `citacao-caixinha-no-veludo.png`: caixinha ao lado da Bíblia, sobre o veludo. Escolhida a **caixinha** (não a letra à mão), sem cabeçalho em destaque.
 - `citacao-seta-variacoes.png`: de onde sai a seta. Escolhida a **seta fluida saindo do centro**, apontando para o trecho todo.
+- `referencia/versao-unica-salmos-140.png` e `versao-unica-salmos-139.png`: a mesma imagem vista em cada rede. Escolhida a **imagem única** como padrão.
